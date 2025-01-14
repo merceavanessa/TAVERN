@@ -1,0 +1,70 @@
+
+body {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    min-height: 100vh;     /* Ensure the body takes the full height of the viewport */
+    margin: 0;             /* Remove default margin */
+    font-family: Arial, sans-serif; /* Optional: Add your font */
+} 
+
+.content {
+    flex-grow: 1;          /* Allow content to take up available space */
+    padding: 20px;        /* Add padding for content */
+}
+
+.footer {
+    color: white;              /* Footer text color */
+    padding: 15px 0;          /* Padding for the footer */
+    width: 100%;              /* Full width */
+}
+
+select {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+.sidebar {
+    min-height: 100vh;
+    /* background-color: #406e8d; */
+    padding: 40px;
+    position: sticky;
+    font-size: large;
+    top: 0;
+}
+
+.sidebar h2 {
+    color: #f8f9fa;
+}
+.sidebar a {
+    display: block;
+    padding: 10px;
+    color: #f8f9fa;
+    text-decoration: none;
+    border-radius: 4px;
+}
+.sidebar a:hover {
+    background-color: #3132403a;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+.bg-warning {
+    border-radius: 5px; /* Rounded corners */
+    padding: 0.2em 0.5em; /* Padding for spacing */
+}
+
+.breadcrumb {
+    background-color: #f8f9fa; /* Light background for visibility */
+    border-radius: 0.25rem; /* Rounded corners */
+}
+
+.breadcrumb-item a {
+    text-decoration: none; /* No underline on links */
+    color: #007bff; /* Primary link color */
+}
+
+.breadcrumb-item.active {
+    color: #6c757d; /* Secondary color for the current page */
+}

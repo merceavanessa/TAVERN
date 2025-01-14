@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satellite Data Visualizations</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="sidebar bg-dark">
+
+                <header class="bg-dark text-center py-1">
+                    <h1 class="display-5 font-weight-bold text-light">
+                        <span class="text-info">T</span>
+                        <span class="text-info">A</span>
+                        <span class="text-info">V</span>
+                        <span class="text-info">E</span>
+                        <span class="text-info">R</span>
+                        <span class="text-info">N </span>
+                    </h1>
+                    <hr class="bg-info">
+                    <br><br>
+                </header>
+                <a href="/"></i> Home</a>
+                <a href="/data/statistics">Data Statistics</a>
+                <a href="/data/visualizations">Data Visualizations</a>
+            </div>
+            <div class="col-md-9 content">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                        <!-- <li class="breadcrumb-item active" aria-current="page">Current Page</li> -->
+                    </ol>
+                </nav>
+                <div class="text-left mb-4">
+                    <h1 class="display-3 font-weight-bold text-dark">
+                        <span class="text-info">Welcome to T</span>
+                        <span class="text-info">A</span>
+                        <span class="text-info">V</span>
+                        <span class="text-info">E</span>
+                        <span class="text-info">R</span>
+                        <span class="text-info">N </span>
+                    </h1><h2 class="font-italic text-secondary" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);">
+                        <b><span class="text-info">T</span>racking</b> 
+                        <b><span class="text-info">A</span>ctivity and</b> 
+                        <b><span class="text-info">V</span>isualizing</b> 
+                        <b><span class="text-info">E</span>ffects of</b> 
+                        <b><span class="text-info">R</span>adiation on</b> 
+                        <b><span class="text-info">N</span>ear-Earth Satellites</b>
+                    </h2>
+                    <hr>
+                    <p class="lead">Grab a comfy seat and let's figure out how space weather shakes things up. <br>This is your colorful playground for analyzing and visualizing satellite orbit decay data with respect to solar activity.</p>
+                </div>
+                <hr>
+                
+                <h2>Featured Tools</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Data Visualizations</h5>
+                        <p class="card-text">Check out various plots available for different satellites. Simply select your desired satellite and type of plot.</p>
+                        <a href="/data/visualizations" class="btn btn-primary">Explore Visualizations</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Recent Insights</h5>
+                        <p class="card-text">Check out the latest updates on the docs to stay informed about new findings.</p>
+                    </div>
+                </div>
+
+                <h2>About This Project</h2>
+                <p>The goal behind TAVERN is to support our research in analyzing space weather effects on our atmosphere. This website aims to provide various visualizations of satellite data and solar activity. </p>
+                <br>   <br>   <br>   <br>   <br>   <br>  
+                <footer class="footer">
+                    <hr>
+                    <br>
+                    <p class="text-secondary">@Copyright 2024, Vanessa Mercea - Astronomical Institute of the University of Bern. <br> Built with Flask. </p>
+                </footer>
+            </div>
+        </div>
+    </div>
+   
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+</body>
+</html>

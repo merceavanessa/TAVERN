@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satellite Data Viewer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+ 
+    <div class="container-fluid">
+        <div class="row">
+            <div class="sidebar bg-dark">
+                <header class="bg-dark text-center py-1">
+                    <h1 class="display-5 font-weight-bold text-light">
+                        <span class="text-info">T</span>
+                        <span class="text-info">A</span>
+                        <span class="text-info">V</span>
+                        <span class="text-info">E</span>
+                        <span class="text-info">R</span>
+                        <span class="text-info">N </span>
+                    </h1>
+                    <hr class="bg-info">
+                    <br><br>
+                </header>
+                <a href="/">Home</a>
+                <a href="/data/statistics">Data Statistics</a>
+                <a href="/data/visualizations">Data Visualizations</a>
+            </div>
+
+            <div class="col-md-9 content">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                        <li class="breadcrumb-item"><a href="/data">Data Visualizations</a></li>
+                    </ol>
+                </nav>
+                <h2>Select your options</h2>
+                <form id="plotForm" method="POST" action="/update_plot">
+                    <div class="form-group">
+                        <label for="satellite">Choose a satellite:</label>
+                        <select id="satellite" name="satellite" class="form-control">
+                            {% for satellite in satellites %}
+                            <option value="{{ satellite }}"
+                            {% if satellite == selected_satellite %} selected {% endif %}>
+                            {{ PRETTY_NAMES[satellite]['name'] }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="plot_type">Choose a plot type:</label>
+                        <select id="plot_type" name="plot_type" class="form-control">
+                            {% for plot_type in plot_types %}
+                            <option value="{{ plot_type }}" 
+                                {% if plot_type == selected_plot_type %} selected {% endif %}>
+                                {{ plot_type }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Plot</button>
+                </form>
+
+                <div id="plotContainer" class="mt-4">
+                    {{ plot_html | safe }}
+                </div>
+
+                <footer class="footer">
+                    <hr>
+                    <br>
+                    <p class="text-secondary">@Copyright 2024, Vanessa Mercea - Astronomical Institute of the University of Bern. <br> Built with Flask. </p>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+</html>

@@ -1,0 +1,30 @@
+{
+    "SWMA_RDAWFI": {
+        "name": "Swarm A",
+        "altitude": 460
+    },
+    "SWMB_RDBWFI": {
+        "name": "Swarm B",
+        "altitude": 530
+    },
+    "SWMC_RDCWFI": {
+        "name": "Swarm C",
+        "altitude": 460
+    },
+    "S3A_RDAEFI": {
+        "name": "Sentinel 3A",
+        "altitude": 814
+    },
+    "S3B_RDAEFI": {
+        "name": "Sentinel 3B",
+        "altitude": 814
+    },
+    "GFOC_RDCDFI": {
+        "name": "GRACE-FO C",
+        "altitude": 500
+    }, 
+    "GFOD_RDDDFI": {
+        "name": "GRACE-FO D",
+        "altitude": 500
+    }
+}
