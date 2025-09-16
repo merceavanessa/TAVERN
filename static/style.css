@@ -5,7 +5,9 @@ body {
     min-height: 100vh;     /* Ensure the body takes the full height of the viewport */
     margin: 0;             /* Remove default margin */
     font-family: Arial, sans-serif; /* Optional: Add your font */
-} 
+    background-color: #181818;
+    color: #f0f0f0; /* optional: makes text lighter for contrast */
+}
 
 .content {
     flex-grow: 1;          /* Allow content to take up available space */
@@ -13,14 +15,21 @@ body {
 }
 
 .footer {
-    color: white;              /* Footer text color */
-    padding: 15px 0;          /* Padding for the footer */
-    width: 100%;              /* Full width */
+    background-color: #181818;
+    color: #f0f0f0;
+    padding: 15px 0;
+    width: 100%;
 }
 
 select {
     -webkit-appearance: none !important;
     appearance: none !important;
+}
+
+select.form-control {
+    background-color: #232323;
+    color: #f0f0f0;
+    border: 1px solid #444;
 }
 
 .sidebar {
@@ -56,7 +65,7 @@ select {
 }
 
 .breadcrumb {
-    background-color: #f8f9fa; /* Light background for visibility */
+    background-color: #232323; /* Dark background for breadcrumb */
     border-radius: 0.25rem; /* Rounded corners */
 }
 
@@ -67,4 +76,29 @@ select {
 
 .breadcrumb-item.active {
     color: #6c757d; /* Secondary color for the current page */
+}
+
+.card {
+    background-color: #232323;
+    color: #f0f0f0;
+    border: 1px solid #333;
+    margin-bottom: 20px;
+}
+
+.card-body {
+    background-color: transparent;
+}
+
+.card-title {
+    color: #f8f9fa;
+}
+
+.card-text {
+    color: #b0b0b0;
+}
+
+input[type="date"].form-control {
+    background-color: #232323;
+    color: #f0f0f0;
+    border: 1px solid #444;
 }
