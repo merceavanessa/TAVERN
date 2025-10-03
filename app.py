@@ -1,3 +1,4 @@
+from dotenv import set_key
 from flask import Flask, render_template, request
 from flask_caching import Cache
 import os
@@ -11,11 +12,14 @@ from flask_debugtoolbar import DebugToolbarExtension
 import gc
 import plotly.colors as pc
 import plotly.express as px
+import re
 import numpy as np
 from scipy.stats import t
 
 # SETTINGS
 pio.templates.default = "plotly_dark"
+pio.renderers.default = "browser"
+
 PLOTS_DIR = './data'
 CONFIG_PATH = '/Users/vanessa/PhD/Dev/SELAnalysis/SpaceWeatherImpact/data/2023-01-01_2024-12-31/configs/POD/config.json'
 additional_features = ['SymH (Omni)', 'AsyD (Omni)',
@@ -116,6 +120,9 @@ def update_plot():
     satellites, plot_types = get_available_plots()
     return render_template('statistics.html', plot_html=plot_html, satellites=satellites, plot_types=plot_types, PRETTY_NAMES=load_config(), selected_satellite=selected_satellite, selected_plot_type=selected_plot_type)
 
+def update_feature_name(name):
+    name = name.replace("(Omni)", "").replace("(LASP)", "").strip()
+    return name
 
 @app.route('/data/visualizations', methods=['GET', 'POST'])
 def visualizations():
@@ -132,8 +139,9 @@ def visualizations():
 
     df = pd.read_parquet(f'{BASE_PATH}/{selected_satellite}.parquet',
                             columns=['orbital_decay', selected_feature])
-        
+
     df = df.loc[selected_date_start:selected_date_end]
+
     df['orbital_decay'].interpolate(inplace=True)
 
     fig = make_subplots(specs=[[{"secondary_y": True}]])
@@ -143,18 +151,18 @@ def visualizations():
     tc2 = default_colors[2 % len(default_colors)]
 
     fig.add_trace(go.Line(
-        x=df.index, y=df[selected_feature], mode='lines', name=selected_feature, line=dict(color=tc1)
+        x=df.index, y=df[selected_feature], mode='lines', name=update_feature_name(selected_feature), line=dict(color=tc1)
     ), secondary_y=False)
 
     fig.add_trace(go.Scatter(
-        x=df.index, y=df['orbital_decay'], mode='lines', name='Orbital Decay', line=dict(color=tc2)
+        x=df.index, y=df['orbital_decay'], mode='lines', name='Orbital Decay Rate [m/day]', line=dict(color=tc2)
     ), secondary_y=True)
 
     fig.update_layout(
         title=f'{selected_feature} and Orbital Decay',
         xaxis_title='Time',
-        yaxis_title=selected_feature,
-        yaxis2_title='Orbital Decay',
+        yaxis_title=update_feature_name(selected_feature),
+        yaxis2_title="Orbital Decay [m/day]",
         yaxis=dict(title_font_color=tc1, tickfont=dict(color=tc1)),
         yaxis2=dict(overlaying='y', side='right', title_font_color=tc2, tickfont=dict(color=tc2)),
         showlegend=True,
@@ -190,11 +198,11 @@ def update_vis_plot():
     tc2 = default_colors[2 % len(default_colors)]
 
     fig.add_trace(go.Line(
-        x=df.index, y=df[selected_feature], mode='lines', name=selected_feature, line=dict(color=tc1)
+        x=df.index, y=df[selected_feature], mode='lines', name=update_feature_name(selected_feature), line=dict(color=tc1)
     ), secondary_y=False)
 
     fig.add_trace(go.Scatter(
-        x=df.index, y=df['orbital_decay'], mode='lines', name='Orbital Decay', line=dict(color=tc2)
+        x=df.index, y=df['orbital_decay'], mode='lines', name='Orbital Decay Rate [m/day]', line=dict(color=tc2)
     ), secondary_y=True)
 
     # fig.update_traces(marker=dict(opacity=0.05), selector=dict(mode='markers'))
@@ -202,15 +210,14 @@ def update_vis_plot():
     fig.update_layout(
         title=f'{selected_feature} and Orbital Decay',
         xaxis_title='Time',
-        yaxis_title=selected_feature,
-        yaxis2_title='Orbital Decay',
+        yaxis_title=update_feature_name(selected_feature),
+        yaxis2_title="Orbital Decay [m/day]",
         yaxis=dict(title_font_color=tc1, tickfont=dict(color=tc1)),
         yaxis2=dict(overlaying='y', side='right', title_font_color=tc2, tickfont=dict(color=tc2)),
         showlegend=True,
     )
 
     plot_html = fig.to_html(full_html=False)
-
 
     return render_template('visualizations.html', plot_html=plot_html, additional_features=additional_features, satellites=satellites, PRETTY_NAMES=load_config(), selection=selection)
 
