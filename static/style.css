@@ -102,3 +102,32 @@ input[type="date"].form-control {
     color: #f0f0f0;
     border: 1px solid #444;
 }
+/* General checkbox styling */
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #007bff; /* Blue check color */
+    cursor: pointer;
+    border-radius: 4px; /* Rounded corners */
+    border: 2px solid #007bff; /* Outline border */
+    transition: all 0.2s ease-in-out; /* Smooth transition */
+}
+
+/* Hover effect */
+input[type="checkbox"]:hover {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+    border-color: #0056b3; /* Darker border on hover */
+}
+
+/* Checked state (enhances the accent color) */
+input[type="checkbox"]:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Optional: space between checkbox and label */
+.form-check-label {
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}

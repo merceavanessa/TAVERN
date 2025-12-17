@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Satellite Data Viewer</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
 </head>
 <body>
  
@@ -37,42 +35,55 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                        <li class="breadcrumb-item"><a href="/data">Data Visualizations</a></li>
+                        <li class="breadcrumb-item"><a href="/data/geomagnetic_storms">Geomagnetic Storms</a></li>
                     </ol>
                 </nav>
-                <h2>Select your options for plotting orbital decay.</h2>
-                <form id="plotForm" method="POST" action="/update_vis_plot">
+                <h2>Select your options</h2>
+                <form id="plotForm" method="POST" action="/update_plot_geomagnetic_storms">
                     <div class="form-group">
                         <label for="satellite">Choose a satellite:</label>
                         <select id="satellite" name="satellite" class="form-control">
                             {% for satellite in satellites %}
                             <option value="{{ satellite }}"
-                                    {% if satellite == selection.satellite %} selected {% endif %}>
-                                {{ PRETTY_NAMES[satellite]['name'] }}
+                            {% if satellite == selected_satellite %} selected {% endif %}>
+                            {{ PRETTY_NAMES[satellite]['name'] }}
                             </option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="date_start">Choose a start date:</label>
-                        <input type="date" id="date_start" name="date_start" class="form-control" value="{{ selection.date_start }}"
-                                min="2023-01-01" max="2025-01-01">
-                    </div>
-                    <div class="form-group">
-                        <label for="date_end">Choose an end date:</label>
-                        <input type="date" id="date_end" name="date_end" class="form-control" value="{{ selection.date_end }}"
-                                min="2023-01-01" max="2025-01-01">
-                    </div>
-                    <div class="form-group">
-                        <label for="additional_feature">Choose an additional feature to plot against decay:</label>
-                        <select id="additional_feature" name="additional_feature" class="form-control">
-                            {% for additional_feature in additional_features %}
-                            <option value="{{ additional_feature }}"
-                                {% if additional_feature == selection.additional_feature %} selected {% endif %}>
-                                {{ PRETTY_COLUMN_DICT[additional_feature] }}
+                        <label for="overlay">Choose an overlay:</label>
+                        <select id="overlay" name="overlay" class="form-control">
+                            {% for overlay in overlays %}
+                            <option value="{{ overlay }}"
+                                {% if overlay == selected_overlay %} selected {% endif %}>
+                                {{ overlay }}
                             </option>
                             {% endfor %}
                         </select>
+                    </div>
+                   <div class="form-group">
+                        <label>Choose additional features to plot:</label>
+                        <div id="columns">
+                            <div class="row">
+                            {% for column in columns %}
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        name="selected_columns[]"
+                                        id="feature_{{ loop.index }}"
+                                        value="{{ column }}"
+                                        {% if column in selected_columns %} checked {% endif %}>
+                                    <label class="form-check-label" for="feature_{{ loop.index }}">
+                                        {{ PRETTY_COLUMN_DICT[column] }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            </div>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Update Plot</button>
                 </form>
@@ -91,19 +102,11 @@
     </div>
     
 </body>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    if (window.MathJax) {
-      MathJax.typesetPromise();
-    }
-  });
-</script>
+
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </html>
