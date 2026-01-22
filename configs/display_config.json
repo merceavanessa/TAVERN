@@ -1,0 +1,104 @@
+{
+  "feature_names": {
+    "orbital_decay": "Orbital Decay (m/day)",
+    "AsyH (Omni)": "AsyH (nT)\n(magnitude of the asymmetric horizontal geomagnetic response)",
+    "SymH (Omni)": "SymH (nT)\n(magnitude of the symmetric horizontal geomagnetic response)",
+    "AsyD (Omni)": "AsyD (nT)\n(magnitude of the asymmetric east-west geomagnetic response)",
+    "SymD (Omni)": "SymD (nT)\n(magnitude of the symmetric east-west geomagnetic response)",
+    "F10.7 (LASP)": "Solar Radio Flux F10.7 (sfu)",
+    "F30 (LASP)": "Solar Radio Flux F30 (sfu)",
+    "Kp (LASP)": "Planetary K-index",
+    "ap (LASP)": "Planetary A-index",
+    "|avg B|": "Average Solar Wind Magnetic Field Magnitude (nT)",
+    "Bz GSE": "Z-component of Solar Wind Magnetic Field in GSE (nT)",
+    "By GSE": "Y-component of Solar Wind Magnetic Field in GSE (nT)",
+    "Flow Speed (km/s": "Solar Wind Flow Speed (km/s)",
+    "Proton density (n/cc)": "Solar Wind Proton Density (particles/cm³)",
+    "Temperature (K)": "Solar Wind Temperature (K)",
+    "Alpha/Proton Ratio": "Solar Wind Alpha to Proton Ratio",
+    "Flow pressure (nPa)": "Solar Wind Flow Pressure (nPa)",
+    "Electric Field (Mv/m)": "Solar Wind Electric Field (mV/m)",
+    "Plasma beta": "Solar Wind Plasma Beta",
+    "Alfven mach number": "Solar Wind Alfvén Mach Number",
+    "Magnetosonic mach number": "Solar Wind Magnetosonic Mach Number",
+    "Vz Velocity (km/s)": "Z-component Solar Wind Plasma Velocity (km/s)",
+    "Vy Velocity (km/s)": "Y-component Solar Wind Plasma Velocity (km/s)",
+    "Approximate Distance to SEL (Re)": "Approximate Distance of the Wind satellite to the Sun-Earth Line (Re)",
+    "activity_level": "Geomagnetic Activity Level"
+  },
+  "event_catalog_feature_names": {
+    "Disturbance_time": "Disturbance storm time",
+    "ICME_Start": "ICME start time",
+    "ICME_End": "ICME end time",
+    "icme_start_time": "ICME start time",
+    "mo_start_time": "Magnetic Obstacle start time",
+    "mo_end_time": "Magnetic Obstacle end time"
+  },
+  "storm_levels":
+    {
+      "G0 (Quiet to Unsettled)": [0.0, 4.99999],
+      "G1 (Minor)": [5.0, 5.99999],
+      "G2 (Moderate)": [6.0, 6.99999],
+      "G3 (Strong)": [7.0, 7.99999],
+      "G4 (Severe)": [8.0, 8.999999],
+      "G5 (Extreme)": [9.0, 9.99999]
+    },
+  "features_to_display": ["SymH (Omni)", "AsyD (Omni)", "SymD (Omni)", "AsyH (Omni)",
+     "F10.7 (LASP)", "F30 (LASP)", "Kp (LASP)", "ap (LASP)",
+     "|avg B|", "Bz GSE", "Flow Speed (km/s",
+     "Proton density (n/cc)", "Temperature (K)", "Alpha/Proton Ratio",
+     "Flow pressure (nPa)", "Electric Field (Mv/m)", "Plasma beta",
+     "Alfven mach number", "Magnetosonic mach number", "Vz Velocity (km/s)",
+     "Approximate Distance to SEL (Re)", "activity_level"
+     ],
+  "satellite_info": {
+    "SWMA_RDAWFI": {
+        "name": "Swarm A",
+        "altitude": 460
+    },
+    "SWMB_RDBWFI": {
+        "name": "Swarm B",
+        "altitude": 530
+    },
+    "SWMC_RDCWFI": {
+        "name": "Swarm C",
+        "altitude": 460
+    },
+    "S1A_RDANFI": {
+        "name": "Sentinel-1A",
+        "altitude": 693
+    },
+    "S2A_RDAZAFI": {
+        "name": "Sentinel-2A",
+        "altitude": 786
+    },
+    "S2B_RDAGFI": {
+        "name": "Sentinel-2B",
+        "altitude": 786
+    },
+    "S3A_RDAFFI": {
+        "name": "Sentinel-3A",
+        "altitude": 814
+    },
+    "S3B_RDAIFI": {
+        "name": "Sentinel-3B",
+        "altitude": 814
+    },
+    "GFOC_RDCDFI": {
+        "name": "GRACE-FO-C",
+        "altitude": 476
+    },
+    "GFOD_RDDDFI": {
+        "name": "GRACE-FO-D",
+        "altitude": 476
+    },
+    "S6A_RDAGFI": {
+        "name": "Sentinel-6A",
+        "altitude": 1336
+    },
+    "all_satellites": {
+      "name": "All Satellites",
+      "altitude": null
+    }
+  }
+}
