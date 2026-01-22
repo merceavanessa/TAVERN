@@ -214,4 +214,4 @@ def render_selected_template(satellites, selected_date_end, selected_date_start,
                            PRETTY_COLUMN_DICT=config.feature_names)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=config.port)
+    app.run(host='0.0.0.0', port=config.port, debug=config.debug)
