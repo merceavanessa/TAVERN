@@ -2,7 +2,7 @@ import numpy as np
 
 
 def set_activity_level(df, geomagnetic_storm_levels):
-    df['activity_level'] = df['Kp (LASP)'].apply(lambda kp: next((level for level, (low, high) in geomagnetic_storm_levels.items() if low <= kp <= high), 'Unknown'))
+    df['activity_level'] = df['Kp'].apply(lambda kp: next((level for level, (low, high) in geomagnetic_storm_levels.items() if low <= kp <= high), 'Unknown'))
 
     #  propagate backward the strongest activity levels until the transition to quiet level to the left and right e.g. G1 G3 G2 G5 G1 -> G1 strong G5 G5 G5 G1
     activity = df['activity_level'].values
@@ -29,7 +29,7 @@ def set_activity_level(df, geomagnetic_storm_levels):
     df['activity_level'] = activity
 
     df = annotate_geomagnetic_storm_events(df, geomagnetic_storm_levels)
-    df['decay_level'] = df['orbital_decay'].rank(pct=True)
+    df['decay_level'] = df['aDot_m_s'].rank(pct=True)
     return df
 
 def annotate_geomagnetic_storm_events(df, geomagnetic_storm_levels):

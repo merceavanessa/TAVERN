@@ -1,18 +1,21 @@
 {
   "feature_names": {
-    "orbital_decay": "Orbital Decay (m/day)",
-    "AsyH (Omni)": "AsyH (nT)\n(magnitude of the asymmetric horizontal geomagnetic response)",
-    "SymH (Omni)": "SymH (nT)\n(magnitude of the symmetric horizontal geomagnetic response)",
-    "AsyD (Omni)": "AsyD (nT)\n(magnitude of the asymmetric east-west geomagnetic response)",
-    "SymD (Omni)": "SymD (nT)\n(magnitude of the symmetric east-west geomagnetic response)",
-    "F10.7 (LASP)": "Solar Radio Flux F10.7 (sfu)",
-    "F30 (LASP)": "Solar Radio Flux F30 (sfu)",
-    "Kp (LASP)": "Planetary K-index",
-    "ap (LASP)": "Planetary A-index",
+    "aDot_m_s": "Orbital Decay Rate (m/day)",
+    "AsyH": "AsyH (nT)\n(magnitude of the asymmetric horizontal geomagnetic response)",
+    "SymH": "SymH (nT)\n(magnitude of the symmetric horizontal geomagnetic response)",
+    "AsyD": "AsyD (nT)\n(magnitude of the asymmetric east-west geomagnetic response)",
+    "SymD": "SymD (nT)\n(magnitude of the symmetric east-west geomagnetic response)",
+    "F10.7": "Solar Radio Flux F10.7 (sfu)",
+    "F30": "Solar Radio Flux F30 (sfu)",
+    "sun_flux_smos": "SMOS Solar Flux (sfu)",
+    "Kp": "Planetary K-index",
+    "ap": "Planetary ap-index",
+    "Hp30" : "Planetary Hp30-index",
     "|avg B|": "Average Solar Wind Magnetic Field Magnitude (nT)",
     "Bz GSE": "Z-component of Solar Wind Magnetic Field in GSE (nT)",
     "By GSE": "Y-component of Solar Wind Magnetic Field in GSE (nT)",
-    "Flow Speed (km/s": "Solar Wind Flow Speed (km/s)",
+    "Bx GSE": "X-component of Solar Wind Magnetic Field in GSE (nT)",
+    "Flow Speed (km/s)": "Solar Wind Flow Speed (km/s)",
     "Proton density (n/cc)": "Solar Wind Proton Density (particles/cm³)",
     "Temperature (K)": "Solar Wind Temperature (K)",
     "Alpha/Proton Ratio": "Solar Wind Alpha to Proton Ratio",
@@ -32,7 +35,8 @@
     "ICME_End": "ICME end time",
     "icme_start_time": "ICME start time",
     "mo_start_time": "Magnetic Obstacle start time",
-    "mo_end_time": "Magnetic Obstacle end time"
+    "mo_end_time": "Magnetic Obstacle end time",
+    "Shock_Arrival_Time": "Shock arrival time"
   },
   "storm_levels":
     {
@@ -43,13 +47,13 @@
       "G4 (Severe)": [8.0, 8.999999],
       "G5 (Extreme)": [9.0, 9.99999]
     },
-  "features_to_display": ["SymH (Omni)", "AsyD (Omni)", "SymD (Omni)", "AsyH (Omni)",
-     "F10.7 (LASP)", "F30 (LASP)", "Kp (LASP)", "ap (LASP)",
-     "|avg B|", "Bz GSE", "Flow Speed (km/s",
+  "features_to_display": ["SymH", "AsyD", "SymD", "AsyH",
+     "F10.7", "F30", "sun_flux_smos", "Kp", "ap", "Hp30",
+     "|avg B|", "Bz GSE", "By GSE", "Bx GSE", "Flow Speed (km/s)",
      "Proton density (n/cc)", "Temperature (K)", "Alpha/Proton Ratio",
      "Flow pressure (nPa)", "Electric Field (Mv/m)", "Plasma beta",
      "Alfven mach number", "Magnetosonic mach number", "Vz Velocity (km/s)",
-     "Approximate Distance to SEL (Re)", "activity_level"
+     "Vy Velocity (km/s)", "Approximate Distance to SEL (Re)", "activity_level"
      ],
   "satellite_info": {
     "SWMA_RDAWFI": {

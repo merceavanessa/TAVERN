@@ -63,6 +63,41 @@ def get_available_response_time_plots():
 
     return sorted(list(satellites)), sorted(list(plot_types)), bzthr_options, corthr_options, extra24htime
 
+def get_available_orbit_tracks():
+    """
+    Get available orbit decay track plots, dates, and altitude ranges.
+    
+    Returns:
+        tuple: (dates, altitude_options, default_date, default_altitude) -
+               Lists of available dates and altitude options, plus defaults
+    """
+    import re
+    
+    dates = set()
+    altitude_options = set()
+    
+    try:
+        for filename in os.listdir(config.orbit_plots_path):
+            if filename.endswith('.html'):
+                # Extract date from filename: aDot_m_s_tracks_sc_{above|below}_600_km_{date}.html
+                match = re.search(r'(below|above)_600_km_(.+?)\.html$', filename)
+                if match:
+                    altitude = match.group(1)
+                    date = match.group(2)
+                    dates.add(date)
+                    altitude_options.add(altitude)
+    except (FileNotFoundError, AttributeError):
+        pass
+    
+    dates = sorted(list(dates))
+    altitude_options = sorted(list(altitude_options))
+    
+    # Default to first date and 'below'
+    default_date = dates[0] if dates else None
+    default_altitude = 'below' if 'below' in altitude_options else (altitude_options[0] if altitude_options else None)
+    
+    return dates, altitude_options, default_date, default_altitude
+
 def get_plot_html(filename, plot_dir=None):
     """
     Get the HTML content of a plot file.
@@ -85,19 +120,6 @@ def get_plot_html(filename, plot_dir=None):
     except FileNotFoundError:
         return "<p>Plot not found.</p>"
 
-def update_feature_name(name):
-    """
-    Update feature name by removing source information.
-    
-    Args:
-        name (str): Original feature name
-        
-    Returns:
-        str: Updated feature name
-    """
-    name = name.replace("(Omni)", "").replace("(LASP)", "").strip()
-    return name
-
 def create_time_series_visualization(satellite, date_start, date_end, selected_feature):
     """
     Create a time series visualization comparing a selected feature with orbital decay.
@@ -111,14 +133,14 @@ def create_time_series_visualization(satellite, date_start, date_end, selected_f
     Returns:
         str: HTML representation of the plot
     """
-    c = ['orbital_decay', 'Kp (LASP)', selected_feature] if selected_feature != 'Kp (LASP)' else ['orbital_decay', 'Kp (LASP)']
+    c = ['aDot_m_s', 'Kp', selected_feature] if selected_feature != 'Kp' else ['aDot_m_s', 'Kp']
     if selected_feature == 'activity_level':
         c.remove(selected_feature)
         
     df = pd.read_parquet(f'{config.data_path}/{satellite}.parquet', columns=c)
     df = df.loc[date_start:date_end]
     
-    df['orbital_decay'].interpolate(inplace=True)
+    df.interpolate(inplace=True)
     df = set_activity_level(df, config.geomagnetic_storm_levels)
     
     fig = make_subplots(specs=[[{"secondary_y": True}]])
@@ -126,22 +148,22 @@ def create_time_series_visualization(satellite, date_start, date_end, selected_f
     default_colors = px.colors.qualitative.Plotly
     tc1 = default_colors[3 % len(default_colors)]
     tc2 = default_colors[2 % len(default_colors)]
-    
-    fig.add_trace(go.Line(
-        x=df.index, y=df[selected_feature], mode='lines', 
-        name=update_feature_name(selected_feature), line=dict(color=tc1)
-    ), secondary_y=False)
-    
+
     fig.add_trace(go.Scatter(
-        x=df.index, y=df['orbital_decay'], mode='lines', 
-        name='Orbital Decay Rate [m/day]', line=dict(color=tc2)
+        x=df.index, y=df[selected_feature], mode='lines',
+        name=f'{config.feature_names[selected_feature]}', line=dict(color=tc1)
+    ), secondary_y=False)
+
+    fig.add_trace(go.Scatter(
+        x=df.index, y=-df['aDot_m_s'], mode='lines',
+        name=config.feature_names['aDot_m_s'], line=dict(color=tc2)
     ), secondary_y=True)
-    
+
     fig.update_layout(
-        title=f'{config.feature_names[selected_feature]} and Orbital Decay',
+        title=f'{config.feature_names[selected_feature]} and Orbital Decay Rate',
         xaxis_title='Time',
-        yaxis_title=update_feature_name(selected_feature),
-        yaxis2_title="Orbital Decay [m/day]",
+        yaxis_title=config.feature_names[selected_feature],
+        yaxis2_title=config.feature_names['aDot_m_s'],
         yaxis=dict(title_font_color=tc1, tickfont=dict(color=tc1)),
         yaxis2=dict(overlaying='y', side='right', title_font_color=tc2, tickfont=dict(color=tc2)),
         font=dict(size=18),

@@ -1,16 +1,22 @@
 {
-    "port": 8080,
+    "port": 5001,
+    "host": "127.0.0.1",
     "debug": false,
-    "analysis_folder": "SpaceWeatherImpact",
+    "analysis_folder": "SpaceWeather",
     "file_label": "2023-01-01_2024-12-31",
     "paths": {
         "static_plots": "./data",
-        "alignments": "../SpaceWeatherImpact/notebooks/2023-01-01_2024-12-31/plots/alignments/",
-        "data": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/processed/",
-        "flags": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/flags_david/"
+        "alignments": "./data/alignments/",
+        "data": "../SpaceWeather/data/2023-01-01_2024-12-31/processed/",
+        "flags": "../SpaceWeather/data/2023-01-01_2024-12-31/flags_david/"
     },
     "flag_files": {
-        "Richardson & Cane": "RC_icmecat_GFOC.csv",
-        "Helio4Cast": "helio4cast_icmecat_GFOC.csv"
+        "ICME": {
+            "Richardson & Cane": "RC_icmecat_GFOC.csv",
+            "Helio4Cast": "helio4cast_icmecat_GFOC.csv"
+        },
+        "IP Shocks": {
+            "IP Shocks Database": "shocks_GFOC.csv"
+        }
     }
 }

@@ -8,13 +8,13 @@ from plotly.subplots import make_subplots
 
 import plotly.io as pio
 
-pio.templates.default = "plotly_dark"
+pio.templates.default = "plotly_dark" if config.theme == 'dark' else "plotly_white"
 pio.renderers.default = "browser"
 
 def plot_daily_boxplot(df_all_stats, satellite, year, month):
     print (df_all_stats.index.Day)
     df_all_stats_days = df_all_stats[(df_all_stats.index.Month == month) & (df_all_stats.index.Year == year)]
-    df_all_stats_days = df_all_stats_days.pivot(index='Day', columns='Function', values='orbital_decay')
+    df_all_stats_days = df_all_stats_days.pivot(index='Day', columns='Function', values='orbital_decay_rate')
     df_all_stats_days = df_all_stats_days.reset_index()
     df_all_stats_days = df_all_stats_days.sort_values(by='Day')
     df_all_stats_days = df_all_stats_days.set_index('Day')
@@ -22,7 +22,7 @@ def plot_daily_boxplot(df_all_stats, satellite, year, month):
     fig = go.Figure()
     for i, day in enumerate(df_all_stats_days.index):
         df_day = df_all_stats_days[df_all_stats_days.index == day]
-        fig.add_trace(go.Box(y=df_day['orbital_decay'], name=day))
+        fig.add_trace(go.Box(y=-df_day['aDot_m_s'], name=day))
 
     fig.update_layout(title=f"Orbital Decay Boxplot for {satellite} in {year}-{month}", height=900, width=1200)
     fig.write_html(f"../../../TAVERN/data/stats_boxplot_{satellite}_{year}-{month}.html")
@@ -32,7 +32,7 @@ def plot_time_series_with_storms(df, satellite, cols_to_plot, overlay='Geomagnet
         rows=len(cols_to_plot) + 1, cols=1,
         shared_xaxes=True,
         vertical_spacing=0.02,
-        subplot_titles=(config.feature_names.get('orbital_decay', 'Orbital Decay'),) + tuple(
+        subplot_titles=(config.feature_names.get('aDot_m_s', 'Orbital Decay'),) + tuple(
             config.feature_names.get(col, col) for col in cols_to_plot),
     )
 
@@ -72,7 +72,8 @@ def plot_time_series_with_storms(df, satellite, cols_to_plot, overlay='Geomagnet
             fig.add_trace(
                 go.Scatter(
                     x=[storm_start, storm_start],
-                    y=[df['orbital_decay'].min(), df['orbital_decay'].max()],
+                    y=[None, None],  # let Plotly auto-span
+                    # y=[-df['aDot_m_s'].min(), -df['aDot_m_s'].max()],
                     mode='lines',
                     line=dict(color=storm_colors.get(storm_strength, 'gray'), width=10),#, dash='dash'),
                     opacity=0.25,
@@ -106,8 +107,8 @@ def plot_time_series_with_storms(df, satellite, cols_to_plot, overlay='Geomagnet
         colors = pc.sequential.Reds[::int(len(pc.sequential.Reds)/3)]
         colors += pc.sequential.Blues[::int(len(pc.sequential.Blues)/3)]
 
-        for flag, filename in config.flag_files.items():
-            cme_df = pd.read_csv(os.path.join(config.flags_path, config.general_settings.flag_files[flag]))
+        for flag, filename in config.flag_files['ICME'].items():
+            cme_df = pd.read_csv(os.path.join(config.flags_path, config.flag_files['ICME'][flag]))
             start_time_name = 'Disturbance_time' if 'Disturbance_time' in cme_df.columns else 'icme_start_time'
             cme_start_name = 'ICME_Start' if 'ICME_Start' in  cme_df.columns else 'mo_start_time'
             cme_end_name = 'ICME_End' if 'ICME_End' in  cme_df.columns else 'mo_end_time'
@@ -121,7 +122,8 @@ def plot_time_series_with_storms(df, satellite, cols_to_plot, overlay='Geomagnet
                     fig.add_trace(
                         go.Scatter(
                             x=[row[col], row[col]],
-                            y=[df['orbital_decay'].min(), df['orbital_decay'].max()],
+                            y=[None, None],  # let Plotly auto-span
+                            # y=[-df['aDot_m_s'].min(), -df['aDot_m_s'].max()],
                             mode='lines',
                             line=dict(color=colors[c], width=3, dash='dash'),
                             opacity=0.35,
@@ -150,10 +152,29 @@ def plot_time_series_with_storms(df, satellite, cols_to_plot, overlay='Geomagnet
 
                 c+=1
 
+    elif 'IP Shocks' in overlay:
+        for flag, filename in config.flag_files[overlay].items():
+            IPShocks_df = pd.read_csv(os.path.join(config.flags_path, filename))
+            IPShocks_df.index = pd.to_datetime(IPShocks_df['Time'])
+            for k, time in enumerate(IPShocks_df.index):
+                fig.add_trace(
+                    go.Scatter(
+                        x=[time, time],
+                        y=[None, None],  # let Plotly auto-span
+                        # y=[-df['aDot_m_s'].min(), -df['aDot_m_s'].max()],
+                        mode='lines',
+                        line=dict(color='darkblue', width=3, dash='dash'),
+                        opacity=0.35,
+                        name= f"{config.event_catalog_feature_names['Shock_Arrival_Time']} ({flag})",
+                        legendgroup=flag,
+                        showlegend=False,
+                    ),
+                )
+
     fig.add_trace(
         go.Scatter(
             x=df.index,
-            y=df['orbital_decay'],
+            y=-df['aDot_m_s'],
             mode='markers+lines',
             marker=dict(
                 color=df['decay_level'],
@@ -163,14 +184,14 @@ def plot_time_series_with_storms(df, satellite, cols_to_plot, overlay='Geomagnet
                 colorbar=dict(title="Decay<br>strength", thickness=10),
             ),
             line=dict(color='gray', width=1),
-            name=config.feature_names.get('orbital_decay', 'Orbital Decay'),
+            name=config.feature_names.get('aDot_m_s', 'Orbital Decay Rate'),
             showlegend=False
         ),
         row=1, col=1
     )
 
     for col in cols_to_plot:
-        if col == 'Kp (LASP)':
+        if col == 'Kp':
             fig.add_trace(
                 go.Scatter(
                     x=df.index,
@@ -194,7 +215,7 @@ def plot_time_series_with_storms(df, satellite, cols_to_plot, overlay='Geomagnet
                 go.Scatter(
                     x=df.index,
                     y=df[col],
-                    mode='lines',
+                    mode='markers' if df[col].notna().all() else 'markers+lines',
                     showlegend=False
                 ),
                 row=cols_to_plot.index(col) + 2, col=1
@@ -209,8 +230,14 @@ def plot_time_series_with_storms(df, satellite, cols_to_plot, overlay='Geomagnet
             x=0.5
         )    )
 
+    for i in range(1, len(cols_to_plot) + 2):
+        fig.update_xaxes(autorange=True, row=i, col=1)
+        fig.update_yaxes(autorange=True, row=i, col=1)
+    fig.update_layout(uirevision="keep")
+
     html = fig.to_html()
 
     note = f"Storm times are extended by 24H for visibility. In case of continuous storms, the strongest storm level is selected for plotting throughout the entire period. Resampled to {rs} cadence for faster plotting."
     html += f"<p style='font-size:14px;color:gray;text-align:center;'>{note}</p>"
     return html
+
