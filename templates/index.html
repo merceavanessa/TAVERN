@@ -23,17 +23,17 @@
                     <hr class="bg-info">
                     <br><br>
                 </header>
-                <a href="/data/statistics">Data Statistics</a>
-                <a href="/data/visualizations">Data Visualizations</a>
-                <a href="/data/responsetimes">Atmospheric Response Times</a>
-                <a href="/data/geomagnetic_storms">Geomagnetic Storms</a>
+                <a href="/data/statistics">Decay Rate Statistics</a>
+                <a href="/data/decay_rates_space_weather">Decay Rates & Space Weather</a>
+                <a href="/data/response_times">Atmospheric Response Times</a>
+                <a href="/data/space_weather_events">Space Weather Events</a>
                 <a href="/data/orbit_decay_tracks">Orbit Decay Tracks</a>
+                <a href="/data/spatial_analysis">Spatial Analysis</a>
             </div>
             <div class="col-md-9 content">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                        <!-- <li class="breadcrumb-item active" aria-current="page">Current Page</li> -->
                     </ol>
                 </nav>
                 <div class="text-left mb-4">
@@ -62,7 +62,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Data Visualizations</h5>
                         <p class="card-text">Check out various plots available for different satellites. Simply select your desired satellite and type of plot.</p>
-                        <a href="/data/visualizations" class="btn btn-primary">Explore Visualizations</a>
+                        <a href="/data/decay_rates_space_weather" class="btn btn-primary">Explore Visualizations</a>
                     </div>
                 </div>
 
@@ -70,6 +70,31 @@
                     <div class="card-body">
                         <h5 class="card-title">Recent Insights</h5>
                         <p class="card-text">Check out our github repos for <a href="https://github.com/merceavanessa/leodecay" target="_blank" rel="noopener noreferrer">data pipelines</a> and  <a href="https://github.com/merceavanessa/leo-orbital-decay-rate-impacts-may-2024" target="_blank" rel="noopener noreferrer">the May 2024 events analysis</a>. </p>
+                    </div>
+                </div>
+
+
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Decay Feature Selection</h5>
+                        <p class="card-text">Choose whether to display raw or smoothed orbital decay rate across all visualizations:</p>
+                        <form id="decayFeatureForm" method="POST" action="/set_decay_feature">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="decay_feature" id="raw_decay" value="aDot_m_s"
+                                    {% if selected_decay_feature == 'aDot_m_s' %}checked{% endif %}>
+                                <label class="form-check-label" for="raw_decay">
+                                    {{ feature_names['aDot_m_s'] }} (Raw)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="decay_feature" id="smooth_decay" value="aDot_smooth_m_s"
+                                    {% if selected_decay_feature == 'aDot_smooth_m_s' %}checked{% endif %}>
+                                <label class="form-check-label" for="smooth_decay">
+                                    {{ feature_names['aDot_smooth_m_s'] }} (Smoothed)
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-primary mt-2">Apply</button>
+                        </form>
                     </div>
                 </div>
 

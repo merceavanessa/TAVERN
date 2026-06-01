@@ -70,7 +70,7 @@ def get_tracks_for_time(dfs, target_time, duration, resolution, satellite_dict, 
         else:
             all_tracks['high-altitude'][satellite_dict[sat]['name']] = (lons, lats, decay_vals, decay_time, additional_data)
 
-        print(f"Processed satellite: {satellite_dict[sat]['name']} with altitude {satellite_dict[sat]['altitude']} km")
+        # print(f"Processed satellite: {satellite_dict[sat]['name']} with altitude {satellite_dict[sat]['altitude']} km")
 
     all_vals_low = np.concatenate([t[2] for t in list(all_tracks['low-altitude'].values())])
     all_vals_high = np.concatenate([t[2] for t in list(all_tracks['high-altitude'].values())])
@@ -81,6 +81,7 @@ def get_tracks_for_time(dfs, target_time, duration, resolution, satellite_dict, 
     return to_plot
 
 def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satellite_dict = {}, columns = ['F10.7', 'Hp30', 'SymH']):
+    print(f"Generating orbit tracks plot for time: {target_time} with duration: {duration} and resolution: {resolution}")
     to_plot = get_tracks_for_time(dfs, target_time, duration, resolution, satellite_dict, columns)
     if not duration:
         duration = pd.to_timedelta(48, unit='h')
@@ -90,17 +91,15 @@ def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satell
     ts = load.timescale()
 
     for altitude_range, (sat_tracks, vmin, vmax) in to_plot.items():
-
         fig = go.Figure()
         sat_list = list(sat_tracks.keys())
 
         fig.add_trace(
             go.Scattergeo(
-                lon=[0],
-                lat=[0],
+                lon=[0], lat=[0],
                 mode="markers",
                 name="Subsolar point",
-               marker=dict(
+                marker=dict(
                     size=18,
                     color="yellow",
                     line=dict(color="orange", width=2),
@@ -115,8 +114,7 @@ def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satell
 
             fig.add_trace(
                 go.Scattergeo(
-                    lon=[lons[0]],
-                    lat=[lats[0]],
+                    lon=[lons[0]], lat=[lats[0]],
                     mode="markers",
                     name=sat,
                     legendgroup=sat,
@@ -133,9 +131,11 @@ def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satell
                                 text="Orbital decay rate (m d⁻¹)",
                                 side="right",
                             ),
-                            len=0.6,
-                            y=0.5,
+                            x=0.85,
+                            y=0.61,
+                            len=0.78,
                             yanchor="middle",
+                            thickness=15,
                         ) if m == 0 else None,
                     ),
                 )
@@ -183,8 +183,7 @@ def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satell
 
                 frame_data.append(
                     go.Scattergeo(
-                        lon=[lons[j]],
-                        lat=[lats[j]],
+                        lon=[lons[j]], lat=[lats[j]],
                         mode="markers",
                         marker=dict(
                             size=15,
@@ -198,7 +197,6 @@ def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satell
                             f"Satellite: {sat}<br>"
                             f"Longitude: {lons[j]:.2f}<br>"
                             f"Latitude: {lats[j]:.2f}<br>"
-                            f"Altitude: {altitudes[sat]}<br>"
                             f"Orbital decay rate: {decay[j]:.2f} (m d⁻¹)<br>"
                             f"{'<br>'.join([f'{col}: {additional_data[col].iloc[j]:.2f}' for col in columns])}"
                     )
@@ -210,13 +208,14 @@ def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satell
                     name=str(idx),
                     layout=go.Layout(
                         annotations=[dict(
-                                text=f"{altitude_range}<br>Time: {real_time}",
-                                x=0.5,
-                                y=0.1,
-                                xref="paper",
-                                yref="paper",
-                                showarrow=False,
-                                font=dict(size=14),
+                            text=f"{altitude_range}<br>Time: {real_time}",
+                            x=0.5, y=0.17,
+                            xref="paper", yref="paper",
+                            xanchor="center", yanchor="top",
+                            showarrow=False,
+                            font=dict(size=13),
+                            bgcolor="rgba(255,255,255,0.7)",
+                            borderpad=3,
                         )]
                     )
                 )
@@ -242,7 +241,7 @@ def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satell
 
         sliders = [
             dict(
-                y=0.05,
+                y=0.10,
                 active=0,
                 currentvalue={"prefix": "Frame: "},
                 pad={"t": 20},
@@ -254,7 +253,8 @@ def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satell
             dict(
                 type="buttons",
                 x=0.05,
-                y=1.05,
+                y=0.999,
+                yanchor="bottom",
                 showactive=False,
                 buttons=[
                     dict(
@@ -269,24 +269,33 @@ def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satell
                             },
                         ],
                     ),
-                    dict(
-                        label="Pause",
-                        method="animate",
-                        args=[
-                            [None],
-                            {
-                                "mode": "immediate",
-                                "frame": {"duration": 0},
-                                "transition": {"duration": 0},
-                            },
-                        ],
-                    ),
                 ],
             ),
             dict(
+                type="buttons",
+                x=0.1,
+                y=0.999,
+                yanchor="bottom",
+                showactive=False,
+                buttons=[
+                    dict(
+                    label="Pause",
+                    method="animate",
+                    args=[
+                        [None],
+                        {
+                            "mode": "immediate",
+                            "frame": {"duration": 0},
+                            "transition": {"duration": 0},
+                        },
+                    ],
+                )],
+            ),
+            dict(
                 type="dropdown",
-                x=0.0,
-                y=1.05,
+                x=0.2,
+                y=0.999,
+                yanchor="bottom",
                 buttons=[
                     dict(
                         label="Natural Earth",
@@ -303,27 +312,39 @@ def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satell
         ]
 
         fig.update_layout(
+            autosize=True,
+            margin=dict(l=0, r=0, t=40, b=50),
+            legend=dict(
+                x=0.92,
+                y=0.9,
+                xanchor="left",
+                yanchor="top",
+                bgcolor="rgba(255,255,255,0.7)",
+                bordercolor="gray",
+                borderwidth=0.5,
+            ),
             annotations=[
                 dict(
                     text=f"{altitude_range}<br>Time: {real_time}",
-                    x=0.5,
-                    y=0.1,
-                    xref="paper",
-                    yref="paper",
+                    x=0.5, y=0.17,
+                    xref="paper", yref="paper",
+                    xanchor="center", yanchor="top",
                     showarrow=False,
-                    font=dict(size=14),
+                    font=dict(size=13),
+                    bgcolor="rgba(255,255,255,0.7)",
+                    borderpad=3,
                 ),
                 dict(
                     text=f"Data source: Bernese reduced-dynamic POD latitude/longitude coordinates (WGS84 ellipsoid) with {resolution} sampling.<br>Hover on the satellite markers for additional data.",
-                    x=0.5,
-                    y=0.05,
-                    xref="paper",
-                    yref="paper",
+                    x=0.5, y=0.03,
+                    xref="paper", yref="paper",
+                    xanchor="center", yanchor="bottom",
                     showarrow=False,
-                    font=dict(size=10, color="gray"),
-                )
+                    font=dict(size=9, color="gray"),
+                ),
             ],
             geo=dict(
+                domain=dict(x=[0, 0.92], y=[0.22, 1.0]),
                 projection_type="natural earth",
                 showland=True,
                 landcolor="#eaeaea",
@@ -338,8 +359,7 @@ def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satell
             ),
             sliders=sliders,
             updatemenus=updatemenus,
-            margin=dict(l=0, r=60, t=60, b=40),
         )
 
-        filename = f"./data/orbital_decay_tracks_{altitude_range.replace(' ', '_').replace('/', '')}_{target_time.replace(':', '-')}.html"
+        filename = f"./data/orbital_decay_tracks/orbital_decay_tracks_{altitude_range.replace(' ', '_').replace('/', '')}_{target_time.replace(':', '-')}.html"
         fig.write_html(filename, config={"responsive": True}, auto_play=False)

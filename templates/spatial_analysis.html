@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spatial Decay Analysis</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            flex-shrink: 0;
+        }
+        .content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        #plotContainer {
+            flex-grow: 1;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #plotContainer iframe {
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+        }
+        .controls-section {
+            padding: 20px;
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <div class="main-container container-fluid">
+        <div class="sidebar">
+            <header class="text-center py-1" onclick="window.location.href='/'" style="cursor: pointer;">
+                <h1 class="display-5 font-weight-bold text-light">
+                    <span class="text-info">T</span>
+                    <span class="text-info">A</span>
+                    <span class="text-info">V</span>
+                    <span class="text-info">E</span>
+                    <span class="text-info">R</span>
+                    <span class="text-info">N </span>
+                </h1>
+                <hr class="bg-info">
+                <br><br>
+            </header>
+            <a href="/data/statistics">Decay Rate Statistics</a>
+            <a href="/data/decay_rates_space_weather">Decay Rates & Space Weather</a>
+            <a href="/data/response_times">Atmospheric Response Times</a>
+            <a href="/data/space_weather_events">Space Weather Events</a>
+            <a href="/data/orbit_decay_tracks">Orbit Decay Tracks</a>
+            <a href="/data/spatial_analysis">Spatial Analysis</a>
+        </div>
+        <div class="content">
+            <div class="controls-section">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" style="margin-bottom: 20px;">
+                        <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                        <li class="breadcrumb-item"><a href="/data/spatial_analysis">Spatial Decay Analysis</a></li>
+                    </ol>
+                </nav>
+                <h2>Select your options</h2>
+                <form id="plotForm" method="POST" action="/data/spatial_analysis" style="display: flex; gap: 20px; align-items: flex-end;">
+                    <div class="form-group" style="margin-bottom: 0; flex: 1; max-width: 250px;">
+                        <label for="satellite">Choose a satellite:</label>
+                        <select id="satellite" name="satellite" class="form-control">
+                            {% for code, pretty_name in satellites %}
+                            <option value="{{ code }}"
+                            {% if code == selected_satellite %} selected {% endif %}>
+                            {{ pretty_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0; flex: 1; max-width: 250px;">
+                        <label for="exclude_may_oct">Exclude May-October 2024:</label>
+                        <select id="exclude_may_oct" name="exclude_may_oct" class="form-control">
+                            {% for option in exclude_options %}
+                            <option value="{{ option }}"
+                                {% if option == selected_exclude %} selected {% endif %}>
+                                {{ option }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-bottom: 0;">Update Plot</button>
+                </form>
+            </div>
+            <div id="plotContainer">
+                {{ plot_html | safe }}
+                <p style="text-align: center;">Note: this figure was pre-generated and thus is static (uses raw decay rates).</p>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="{{ url_for('static', filename='theme.js') }}"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+</html>

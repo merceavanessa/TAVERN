@@ -1,9 +1,6 @@
-"""
-Configuration module for the TAVERN application.
-Handles loading and providing access to configuration settings.
-"""
 import json
 import os
+from flask import session, has_request_context
 
 class Config:
     """Configuration class for the TAVERN application."""
@@ -21,6 +18,7 @@ class Config:
         self.alignments_path = self.general_settings['paths']['alignments']
         self.data_path = self.general_settings['paths']['data']
         self.orbit_plots_path = self.general_settings['paths'].get('orbit_plots', None)
+        self.spatial_decay_plots_path = self.general_settings['paths'].get('spatial_decay_plots', None)
         self.file_label = self.general_settings['file_label']
         self.flags_path = self.general_settings['paths']['flags']
         self.debug = self.general_settings.get('debug', False)
@@ -32,6 +30,8 @@ class Config:
         self.geomagnetic_storm_levels = self.display_settings['storm_levels']
         self.additional_features = self.display_settings['features_to_display']
         self.satellite_info = self.display_settings['satellite_info']
+        self.decay_feature = self.display_settings['default_decay_feature']
+        self.decay_feature_options = self.display_settings['decay_feature_options']
         
         # Define event filtering map
         self.event_filtering_map = {
@@ -39,7 +39,13 @@ class Config:
             'not-included': '',
             'before and after': '_with_24h_extratime_bothways'
         }
-    
+
+    def get_active_decay_feature(self):
+        """Get decay feature, preferring session over default."""
+        if has_request_context():
+            return session.get('decay_feature', self.decay_feature)
+        return self.decay_feature
+
     def _load_config(self, config_path):
         """
         Load configuration from a JSON file.

@@ -23,22 +23,23 @@
                     <hr class="bg-info">
                     <br><br>
                 </header>
-                <a href="/data/statistics">Data Statistics</a>
-                <a href="/data/visualizations">Data Visualizations</a>
-                <a href="/data/responsetimes">Atmospheric Response Times</a>
-                <a href="/data/geomagnetic_storms">Geomagnetic Storms</a>
+                <a href="/data/statistics">Decay Rate Statistics</a>
+                <a href="/data/decay_rates_space_weather">Decay Rates & Space Weather</a>
+                <a href="/data/response_times">Atmospheric Response Times</a>
+                <a href="/data/space_weather_events">Space Weather Events</a>
                 <a href="/data/orbit_decay_tracks">Orbit Decay Tracks</a>
+                <a href="/data/spatial_analysis">Spatial Analysis</a>
             </div>
 
             <div class="col-md-9 content">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                        <li class="breadcrumb-item"><a href="/data/orbit_decay_tracks">Orbit Decay Tracks</a></li>
+                        <li class="breadcrumb-item"><a href="/data/orbit_decay_tracks">Orbit Decay Tracks</a>
                     </ol>
                 </nav>
                 <h2>Select your options</h2>
-                <form id="plotForm" method="POST" action="/update_plot_orbit_decay_tracks">
+                <form id="plotForm" method="POST" action="/data/orbit_decay_tracks">
                     <div class="form-group">
                         <label for="date">Choose a date:</label>
                         <select id="date" name="date" class="form-control">
@@ -78,9 +79,8 @@
                     </style>
                     {{ plot_html | safe }}
                 </div>
-
-                <p>This visualization shows orbital decay tracks for satellites separated by altitude range (below and above 600 km).</p>
-            </div>
+        <p style="text-align: center;">This visualization shows orbital decay tracks for satellites separated by altitude range (below and above 600 km). Currently available for the top three strongest events during 2023-2024. Interacting via the slider is recommended compared to the automated animation (play/pause). </p>
+        <p style="text-align: center;">This figure was pre-generated and thus is static (uses raw decay rates).</p>
         </div>
         <div class="row" style="width: 100%;">
             <footer class="footer">

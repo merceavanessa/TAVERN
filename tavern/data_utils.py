@@ -1,5 +1,5 @@
 import numpy as np
-
+from tavern.config import config
 
 def set_activity_level(df, geomagnetic_storm_levels):
     df['activity_level'] = df['Kp'].apply(lambda kp: next((level for level, (low, high) in geomagnetic_storm_levels.items() if low <= kp <= high), 'Unknown'))
@@ -29,7 +29,7 @@ def set_activity_level(df, geomagnetic_storm_levels):
     df['activity_level'] = activity
 
     df = annotate_geomagnetic_storm_events(df, geomagnetic_storm_levels)
-    df['decay_level'] = df['aDot_m_s'].rank(pct=True)
+    df['decay_level'] = (-df[config.get_active_decay_feature()]).rank(pct=True)
     return df
 
 def annotate_geomagnetic_storm_events(df, geomagnetic_storm_levels):

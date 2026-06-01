@@ -23,23 +23,23 @@
                     <hr class="bg-info">
                     <br><br>
                 </header>
-                <a href="/">Home</a>
-                <a href="/data/statistics">Data Statistics</a>
-                <a href="/data/visualizations">Data Visualizations</a>
-                <a href="/data/responsetimes">Atmospheric Response Times</a>
-                <a href="/data/geomagnetic_storms">Geomagnetic Storms</a>
+                <a href="/data/statistics">Decay Rate Statistics</a>
+                <a href="/data/decay_rates_space_weather">Decay Rates & Space Weather</a>
+                <a href="/data/response_times">Atmospheric Response Times</a>
+                <a href="/data/space_weather_events">Space Weather Events</a>
                 <a href="/data/orbit_decay_tracks">Orbit Decay Tracks</a>
+                <a href="/data/spatial_analysis">Spatial Analysis</a>
             </div>
 
             <div class="col-md-9 content">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                        <li class="breadcrumb-item"><a href="/data/geomagnetic_storms">Geomagnetic Storms</a></li>
+                        <li class="breadcrumb-item"><a href="/data/space_weather_events">Space Weather Events</a></li>
                     </ol>
                 </nav>
                 <h2>Select your options</h2>
-                <form id="plotForm" method="POST" action="/update_plot_geomagnetic_storms">
+                <form id="plotForm" method="POST" action="/data/space_weather_events">
                     <div class="form-group">
                         <label for="satellite">Choose a satellite:</label>
                         <select id="satellite" name="satellite" class="form-control">
