@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decay Rate Statistics</title>
+    <title>Space Weather Events</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -46,16 +46,15 @@
                 {% endif %}
             </div>
         </div>
-
         <div class="col-md-9 content">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                    <li class="breadcrumb-item"><a href="/data/statistics">Statistics</a></li>
+                    <li class="breadcrumb-item"><a href="/data/space_weather_events">Space Weather Events</a></li>
                 </ol>
             </nav>
             <h2>Select your options</h2>
-            <form id="plotForm" method="POST" action="/data/statistics">
+            <form id="plotForm" method="POST" action="/data/space_weather_events">
                 <div class="form-group">
                     <label for="satellite">Choose a satellite:</label>
                     <select id="satellite" name="satellite" class="form-control">
@@ -68,15 +67,38 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="plot_type">Choose a plot type:</label>
-                    <select id="plot_type" name="plot_type" class="form-control">
-                        {% for plot_type in plot_types %}
-                            <option value="{{ plot_type }}"
-                                    {% if plot_type == selected_plot_type %} selected {% endif %}>
-                                {{ plot_type }}
+                    <label for="overlay">Choose an overlay:</label>
+                    <select id="overlay" name="overlay" class="form-control">
+                        {% for overlay in overlays %}
+                            <option value="{{ overlay }}"
+                                    {% if overlay == selected_overlay %} selected {% endif %}>
+                                {{ overlay }}
                             </option>
                         {% endfor %}
                     </select>
+                </div>
+                <div class="form-group">
+                    <label>Choose additional features to plot:</label>
+                    <div id="columns">
+                        <div class="row">
+                            {% for column in columns %}
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="form-check">
+                                        <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="selected_columns[]"
+                                                id="feature_{{ loop.index }}"
+                                                value="{{ column }}"
+                                                {% if column in selected_columns %} checked {% endif %}>
+                                        <label class="form-check-label" for="feature_{{ loop.index }}">
+                                            {{ PRETTY_COLUMN_DICT[column] }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-outline-info">Update</button>
             </form>
@@ -84,8 +106,6 @@
             <div id="plotContainer" class="mt-4">
                 {{ plot_html | safe }}
             </div>
-            <p style="text-align: center;">Note: this figure was pre-generated and thus is static (uses raw decay
-                rates).</p>
         </div>
     </div>
     <div class="row" style="width: 100%;">
@@ -95,6 +115,7 @@
         </footer>
     </div>
 </div>
+
 <script src="{{ url_for('static', filename='js/jquery.slim.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

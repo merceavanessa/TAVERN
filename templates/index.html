@@ -3,92 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Satellite Data Visualizations</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>LEO Decay</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 </head>
-<body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="sidebar bg-dark">
-
-                <header class="bg-dark text-center py-1">
-                    <h1 class="display-5 font-weight-bold text-light">
-                        <span class="text-info">T</span>
-                        <span class="text-info">A</span>
-                        <span class="text-info">V</span>
-                        <span class="text-info">E</span>
-                        <span class="text-info">R</span>
-                        <span class="text-info">N </span>
-                    </h1>
-                    <hr class="bg-info">
-                    <br><br>
-                </header>
-                <a href="/"></i> Home</a>
-                <a href="/data/statistics">Data Statistics</a>
-                <a href="/data/visualizations">Data Visualizations</a>
-            </div>
-            <div class="col-md-9 content">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                        <!-- <li class="breadcrumb-item active" aria-current="page">Current Page</li> -->
-                    </ol>
-                </nav>
-                <div class="text-left mb-4">
-                    <h1 class="display-3 font-weight-bold text-dark">
-                        <span class="text-info">Welcome to T</span>
-                        <span class="text-info">A</span>
-                        <span class="text-info">V</span>
-                        <span class="text-info">E</span>
-                        <span class="text-info">R</span>
-                        <span class="text-info">N </span>
-                    </h1><h2 class="font-italic text-secondary" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);">
-                        <b><span class="text-info">T</span>racking</b> 
-                        <b><span class="text-info">A</span>ctivity and</b> 
-                        <b><span class="text-info">V</span>isualizing</b> 
-                        <b><span class="text-info">E</span>ffects of</b> 
-                        <b><span class="text-info">R</span>adiation on</b> 
-                        <b><span class="text-info">N</span>ear-Earth Satellites</b>
-                    </h2>
+<body class="light-theme">
+<div class="container-fluid">
+    <div class="row">
+        <div class="sidebar">
+            <header class="text-center py-3" onclick="window.location.href='/'" style="cursor: pointer;">
+                <h1 class="display-5 font-weight-bold">
+                    <span class="text-info">T A V E R N</span>
+                </h1>
+                <hr class="bg-info">
+            </header>
+            {% if current_user.is_authenticated %}
+                <a href="/data/statistics">Decay Rate Statistics</a>
+                <a href="/data/decay_rates_space_weather">Decay Rates & Space Weather</a>
+                <a href="/data/response_times">Atmospheric Response Times</a>
+                <a href="/data/space_weather_events">Space Weather Events</a>
+                <a href="/data/orbit_decay_tracks">Orbit Decay Tracks</a>
+                <a href="/data/spatial_analysis">Spatial Analysis</a>
+            {% endif %}
+            <div class="text-center mt-auto">
+                {% if current_user.is_authenticated %}
                     <hr>
-                    <p class="lead">Grab a comfy seat and let's figure out how space weather shakes things up. <br>This is your colorful playground for analyzing and visualizing satellite orbit decay data with respect to solar activity.</p>
-                </div>
+                    <small class="text-secondary d-block mb-2">
+                        <i class="fas fa-user mr-1"></i> {{ current_user.name }}
+                    </small>
+                    <hr>
+                    <a href="/logout" class="btn btn-outline-danger btn-sm btn-block"
+                       onclick="event.stopPropagation()">
+                        <i class="fas fa-sign-out-alt mr-1"></i> Sign out
+                    </a>
+                {% else %}
+                    <a href="/login" class="btn btn-outline-info btn-sm btn-block"
+                       onclick="event.stopPropagation()">
+                        <i class="fab fa-google mr-1"></i> Sign in with Google
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-9 content">
+            <div class="text-left mb-4">
+                <h1 class="display-3 font-weight-bold text-dark">
+                    <span class="text-info">Welcome to T A V E R N</span>
+                </h1>
+                <h3 class="text-secondary" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);">
+                    <b><span class="text-info">T</span>racking</b>
+                    <b><span class="text-info">A</span>tmospheric</b>
+                    <b><span class="text-info">V</span>ariability from solar</b>
+                    <b><span class="text-info">E</span>ruptions and</b>
+                    <b><span class="text-info">R</span>adiation using a</b>
+                    <b><span class="text-info">N</span>etwork of satellites</b>
+                </h3>
                 <hr>
-                
-                <h2>Featured Tools</h2>
+
+                {% if not current_user.is_authenticated %}
+                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                        <i class="fas fa-lock mr-3"></i>
+                        <div>
+                            You must be signed in to access the data pages.
+                            <a href="/login" class="alert-link ml-2">Sign in with Google</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="alert alert-success d-flex align-items-center" role="alert">
+                        <i class="fas fa-unlock mr-3"></i>
+                        <div>Welcome back, <strong>{{ current_user.name }}</strong>. You have full access.</div>
+                    </div>
+                {% endif %}
+                <p class="lead">Grab a seat at the TAVERN and explore how space weather shapes the upper atmosphere and
+                    satellite orbits. A space for analyzing orbital decay and solar activity.</p>
+            </div>
+            <hr>
+
+            <h3>Featured Tools</h3>
+            <br>
+            {% if current_user.is_authenticated %}
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Data Visualizations</h5>
-                        <p class="card-text">Check out various plots available for different satellites. Simply select your desired satellite and type of plot.</p>
-                        <a href="/data/visualizations" class="btn btn-primary">Explore Visualizations</a>
+                        <p class="card-text">Check out various plots available for different satellites. Simply select
+                            your desired satellite and type of plot.</p>
+                        <a href="/data/decay_rates_space_weather" class="btn btn-outline-info">Explore
+                            Visualizations</a>
                     </div>
                 </div>
+            {% endif %}
 
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Recent Insights</h5>
-                        <p class="card-text">Check out the latest updates on the docs to stay informed about new findings.</p>
-                    </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Recent Insights</h5>
+                    <p class="card-text">Check out our github repos for <a
+                            href="https://github.com/merceavanessa/leodecay" target="_blank" rel="noopener noreferrer">data
+                        pipelines</a> and <a
+                            href="https://github.com/merceavanessa/leo-orbital-decay-rate-impacts-may-2024"
+                            target="_blank" rel="noopener noreferrer">the May 2024 events analysis</a>. </p>
                 </div>
-
-                <h2>About This Project</h2>
-                <p>The goal behind TAVERN is to support our research in analyzing space weather effects on our atmosphere. This website aims to provide various visualizations of satellite data and solar activity. </p>
-                <br>   <br>   <br>   <br>   <br>   <br>  
-                <footer class="footer">
-                    <hr>
-                    <br>
-                    <p class="text-secondary">@Copyright 2024, Vanessa Mercea - Astronomical Institute of the University of Bern. <br> Built with Flask. </p>
-                </footer>
             </div>
+
+            {% if current_user.is_authenticated %}
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Decay Feature Selection</h5>
+                        <p class="card-text">Choose whether to display raw or smoothed orbital decay rate across all
+                            visualizations:</p>
+                        <form id="decayFeatureForm" method="POST" action="/set_decay_feature">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="decay_feature" id="raw_decay"
+                                       value="aDot_m_s"
+                                       {% if selected_decay_feature == 'aDot_m_s' %}checked{% endif %}>
+                                <label class="form-check-label" for="raw_decay">
+                                    {{ feature_names['aDot_m_s'] }} (Raw)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="decay_feature" id="smooth_decay"
+                                       value="aDot_smooth_m_s"
+                                       {% if selected_decay_feature == 'aDot_smooth_m_s' %}checked{% endif %}>
+                                <label class="form-check-label" for="smooth_decay">
+                                    {{ feature_names['aDot_smooth_m_s'] }} (Smoothed)
+                                </label>
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-outline-info">Apply</button>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+
+            <br>
+            <h3>About This Project</h3>
+            <p>The goal behind TAVERN is to support our research in analyzing space weather effects on our atmosphere by
+                providing various visualizations of satellite data and solar activity. </p>
+            <br> <br> <br> <br> <br> <br>
         </div>
     </div>
-   
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <div class="row" style="width: 100%;">
+        <footer class="footer">
+            <p class="text-secondary">@Copyright 2026 Vanessa Mercea, Astronomical Institute of the University of Bern.
+                <br> Built with Flask. </p>
+        </footer>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/jquery.slim.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 </body>
 </html>

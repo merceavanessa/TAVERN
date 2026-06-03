@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decay Rate Statistics</title>
+    <title>Spatial Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -46,44 +46,46 @@
                 {% endif %}
             </div>
         </div>
-
         <div class="col-md-9 content">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                    <li class="breadcrumb-item"><a href="/data/statistics">Statistics</a></li>
-                </ol>
-            </nav>
-            <h2>Select your options</h2>
-            <form id="plotForm" method="POST" action="/data/statistics">
-                <div class="form-group">
-                    <label for="satellite">Choose a satellite:</label>
-                    <select id="satellite" name="satellite" class="form-control">
-                        {% for satellite in satellites %}
-                            <option value="{{ satellite }}"
-                                    {% if satellite == selected_satellite %} selected {% endif %}>
-                                {{ PRETTY_NAMES[satellite]['name'] }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="plot_type">Choose a plot type:</label>
-                    <select id="plot_type" name="plot_type" class="form-control">
-                        {% for plot_type in plot_types %}
-                            <option value="{{ plot_type }}"
-                                    {% if plot_type == selected_plot_type %} selected {% endif %}>
-                                {{ plot_type }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-outline-info">Update</button>
-            </form>
-
-            <div id="plotContainer" class="mt-4">
+            <div class="controls-section">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" style="margin-bottom: 20px;">
+                        <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                        <li class="breadcrumb-item"><a href="/data/spatial_analysis">Spatial Decay Analysis</a></li>
+                    </ol>
+                </nav>
+                <h2>Select your options</h2>
+                <form id="plotForm" method="POST" action="/data/spatial_analysis"
+                      style="display: flex; gap: 20px; align-items: flex-end;">
+                    <div class="form-group" style="margin-bottom: 0; flex: 1; max-width: 250px;">
+                        <label for="satellite">Choose a satellite:</label>
+                        <select id="satellite" name="satellite" class="form-control">
+                            {% for code, pretty_name in satellites %}
+                                <option value="{{ code }}"
+                                        {% if code == selected_satellite %} selected {% endif %}>
+                                    {{ pretty_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0; flex: 1; max-width: 250px;">
+                        <label for="exclude_may_oct">Exclude May-October 2024:</label>
+                        <select id="exclude_may_oct" name="exclude_may_oct" class="form-control">
+                            {% for option in exclude_options %}
+                                <option value="{{ option }}"
+                                        {% if option == selected_exclude %} selected {% endif %}>
+                                    {{ option }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-outline-info" style="margin-bottom: 0;">Update</button>
+                </form>
+            </div>
+            <div id="plotContainer">
                 {{ plot_html | safe }}
             </div>
+            <br>
             <p style="text-align: center;">Note: this figure was pre-generated and thus is static (uses raw decay
                 rates).</p>
         </div>

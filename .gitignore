@@ -1,3 +1,7 @@
 data/*
 cache-directory/*
 .DS_Store
+/configs/config_local.json
+/static/css/
+/static/js/
+.env
