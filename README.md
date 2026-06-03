@@ -1,8 +1,8 @@
 # TAVERN: Tracking Atmospheric Variability from solar Eruptions and Radiation using a Network of Satellites
 
-This repository contains the TAVERN project, a Flask-based web application designed for tracking, visualizing, and analyzing atmospheric variability caused by solar events. To analyze impacts, the project uses low-Earth orbit satellite orbit data in conjunction with different space weather datasets and catalogs. It is a web application with different data analysis tools for both static and dynamic data. The purpose of this repository is to provide transparency into the data and methods used for this analysis.
+This repository contains the TAVERN project, a Flask-based web application designed for tracking, visualizing, and analyzing atmospheric variability caused by solar events. To analyze impacts, the project uses low-Earth orbit satellite orbit data in conjunction with different space weather datasets and catalogs. It is a web application with different data analysis tools for both static and dynamic data.
 
-The app will also be soon available at [todo: add link to the hosted app]. 
+The app will also be soon available at [todo: add link to the hosted app]. The purpose of this repository is to provide transparency concerning the visualizations for users of the (future) website.
 
 ## Project Structure
 
