@@ -2,6 +2,14 @@ import numpy as np
 from tavern.config import config
 
 def set_activity_level(df, geomagnetic_storm_levels):
+    """
+        Set the 'activity_level' column in the DataFrame based on the 'Kp' index and propagate the strongest activity levels backward until
+        the transition to quiet level, and set the 'decay_level' column as the percentile rank of the active decay feature.
+        Args:
+            df: dataframe with columns 'Kp' and 'activity_level'
+        Returns:
+            df: dataframe with 'activity_level' and 'decay_level' columns set
+    """
     df['activity_level'] = df['Kp'].apply(lambda kp: next((level for level, (low, high) in geomagnetic_storm_levels.items() if low <= kp <= high), 'Unknown'))
 
     #  propagate backward the strongest activity levels until the transition to quiet level to the left and right e.g. G1 G3 G2 G5 G1 -> G1 strong G5 G5 G5 G1
@@ -33,6 +41,14 @@ def set_activity_level(df, geomagnetic_storm_levels):
     return df
 
 def annotate_geomagnetic_storm_events(df, geomagnetic_storm_levels):
+    """
+    Annotate geomagnetic storm events in the DataFrame by assigning event numbers and unique event IDs for each activity level
+    Args:
+        df: dataframe with 'activity_level' column
+        geomagnetic_storm_levels: dict mapping activity levels to Kp index ranges
+    Returns:
+        df: dataframe with 'event_number' and 'unique_event_id' columns set for each
+    """
     for i, level in enumerate(geomagnetic_storm_levels.keys()):
         if 'G0' in level:
             continue

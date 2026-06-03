@@ -7,11 +7,8 @@ class Config:
     
     def __init__(self):
         """Initialize the configuration by loading settings from JSON files."""
-        print(os.getcwd())
-        self.general_settings = self._load_config('./configs/config_local.json' if '/Users/vanessa/PhD/' in os.getcwd() else './configs/config.json')
+        self.general_settings = self._load_config('./configs/config.json')
         self.display_settings = self._load_config('./configs/display_config.json')
-        # print current path
-        # Extract commonly used settings for easier access
         self.flag_files = self.general_settings['flag_files']
         self.analysis_folder = self.general_settings['analysis_folder']
         self.plots_path = self.general_settings['paths']['static_plots']
@@ -21,10 +18,6 @@ class Config:
         self.spatial_decay_plots_path = self.general_settings['paths'].get('spatial_decay_plots', None)
         self.file_label = self.general_settings['file_label']
         self.flags_path = self.general_settings['paths']['flags']
-        self.debug = self.general_settings.get('debug', False)
-        self.port = self.general_settings.get('port', 8000)
-        self.host = self.general_settings.get('host', '')
-        self.theme = self.general_settings.get('theme', 'dark')
         self.feature_names = self.display_settings['feature_names']
         self.event_catalog_feature_names = self.display_settings['event_catalog_feature_names']
         self.geomagnetic_storm_levels = self.display_settings['storm_levels']
@@ -33,7 +26,6 @@ class Config:
         self.decay_feature = self.display_settings['default_decay_feature']
         self.decay_feature_options = self.display_settings['decay_feature_options']
         
-        # Define event filtering map
         self.event_filtering_map = {
             'included': '_with_24h_extratime',
             'not-included': '',
@@ -41,7 +33,10 @@ class Config:
         }
 
     def get_active_decay_feature(self):
-        """Get decay feature, preferring session over default."""
+        """Get decay feature, preferring session over default.
+        Returns:
+            str: The active decay feature to use
+        """
         if has_request_context():
             return session.get('decay_feature', self.decay_feature)
         return self.decay_feature
@@ -49,10 +44,8 @@ class Config:
     def _load_config(self, config_path):
         """
         Load configuration from a JSON file.
-        
         Args:
             config_path (str): Path to the configuration file
-            
         Returns:
             dict: Configuration settings
         """

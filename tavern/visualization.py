@@ -11,13 +11,12 @@ from tavern.config import config
 from tavern.data_utils import set_activity_level
 from tavern.orbit_tracks_utils import plot_orbit_tracks
 
-pio.templates.default = "plotly_dark" if config.theme == 'dark' else "plotly_white"
+pio.templates.default = "plotly_white"
 pio.renderers.default = "browser"
 
 def get_available_plots():
     """
     Get available plot types and satellites from the plots directory.
-    
     Returns:
         tuple: (satellites, plot_types) - Lists of available satellites and plot types
     """
@@ -27,7 +26,7 @@ def get_available_plots():
     for filename in os.listdir(config.plots_path):
         if filename.endswith('.html'):
             parts = filename.split('_')
-            if len(parts) >= 3:  # Ensure valid filename structure
+            if len(parts) >= 3:
                 plot_type = parts[1]  # e.g., 'barplot' or 'boxplot'
                 satellite = parts[2]+'_'+parts[3]  # e.g., 'S3A'
                 satellites.add(satellite)
@@ -38,7 +37,6 @@ def get_available_plots():
 def get_available_response_time_plots():
     """
     Get available response time plots, satellites, and filtering options.
-    
     Returns:
         tuple: (satellites, plot_types, bzthr_options, corthr_options, extra24htime) - 
                Lists of available options
@@ -69,7 +67,6 @@ def get_available_response_time_plots():
 def get_available_orbit_tracks():
     """
     Get available orbit decay track plots, dates, and altitude ranges.
-    
     Returns:
         tuple: (dates, altitude_options, default_date, default_altitude) -
                Lists of available dates and altitude options, plus defaults
@@ -104,11 +101,9 @@ def get_available_orbit_tracks():
 def get_plot_html(filename, plot_dir=None):
     """
     Get the HTML content of a plot file.
-    
     Args:
         filename (str): Name of the plot file
         plot_dir (str, optional): Directory containing the plot. Defaults to config.plots_path.
-        
     Returns:
         str: HTML content of the plot
     """
@@ -126,13 +121,11 @@ def get_plot_html(filename, plot_dir=None):
 def create_time_series_visualization(satellite, date_start, date_end, selected_feature):
     """
     Create a time series visualization comparing a selected feature with the orbital decay rate.
-    
     Args:
         satellite (str): Satellite identifier
         date_start (str): Start date for the visualization
         date_end (str): End date for the visualization
         selected_feature (str): Feature to visualize alongside orbital decay
-        
     Returns:
         str: HTML content of the plot
     """
@@ -260,10 +253,7 @@ def plot_time_series_with_storms(df, satellite, cols_to_plot, overlay='Geomagnet
                 continue
             storm_start = storm_times[0]
             n_levels = len(geomagnetic_storm_levels)
-            indices = np.linspace(0, len(pc.sequential.Plasma ) - 1, n_levels).astype(int)
             storm_colors = {}
-            # for key, idx in zip(geomagnetic_storm_levels.keys(), indices):
-            #     storm_colors[key] = pc.sequential.Plasma [idx]
             greens = pc.sequential.Greens[3:]
             indices = np.linspace(0, len(greens) - 1, n_levels).astype(int)
             for key, idx in zip(geomagnetic_storm_levels.keys(), indices):
@@ -432,6 +422,13 @@ def plot_time_series_with_storms(df, satellite, cols_to_plot, overlay='Geomagnet
 
 
 def get_data_plot_html(selected_additional_features, selected_overlay, selected_satellite):
+    """
+    Get the HTML content for a time series plot of orbital decay and additional features, with optional overlays.
+    Args:
+        selected_additional_features (list): List of additional features to plot
+        selected_overlay (str): Type of overlay to include ('Geomagnetic Storms', 'ICME', 'IP Shocks', or 'None')
+        selected_satellite (str): Satellite code (e.g., 'S3A', 'SWMA')
+    """
     af = selected_additional_features.copy()
     if 'Kp' not in af:
         af += ['Kp']

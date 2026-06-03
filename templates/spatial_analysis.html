@@ -3,70 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spatial Decay Analysis</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Spatial Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .main-container {
-            display: flex;
-            flex: 1;
-        }
-        .sidebar {
-            flex-shrink: 0;
-        }
-        .content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        #plotContainer {
-            flex-grow: 1;
-            overflow: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #plotContainer iframe {
-            width: 100% !important;
-            height: 100% !important;
-            border: none !important;
-        }
-        .controls-section {
-            padding: 20px;
-            background-color: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-color);
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 </head>
 <body class="light-theme">
-    <div class="main-container container-fluid">
+<div class="container-fluid">
+    <div class="row">
         <div class="sidebar">
-            <header class="text-center py-1" onclick="window.location.href='/'" style="cursor: pointer;">
-                <h1 class="display-5 font-weight-bold text-light">
-                    <span class="text-info">T</span>
-                    <span class="text-info">A</span>
-                    <span class="text-info">V</span>
-                    <span class="text-info">E</span>
-                    <span class="text-info">R</span>
-                    <span class="text-info">N </span>
+            <header class="text-center py-3" onclick="window.location.href='/'" style="cursor: pointer;">
+                <h1 class="display-5 font-weight-bold">
+                    <span class="text-info">T A V E R N</span>
                 </h1>
                 <hr class="bg-info">
-                <br><br>
             </header>
-            <a href="/data/statistics">Decay Rate Statistics</a>
-            <a href="/data/decay_rates_space_weather">Decay Rates & Space Weather</a>
-            <a href="/data/response_times">Atmospheric Response Times</a>
-            <a href="/data/space_weather_events">Space Weather Events</a>
-            <a href="/data/orbit_decay_tracks">Orbit Decay Tracks</a>
-            <a href="/data/spatial_analysis">Spatial Analysis</a>
+            {% if current_user.is_authenticated %}
+                <a href="/data/statistics">Decay Rate Statistics</a>
+                <a href="/data/decay_rates_space_weather">Decay Rates & Space Weather</a>
+                <a href="/data/response_times">Atmospheric Response Times</a>
+                <a href="/data/space_weather_events">Space Weather Events</a>
+                <a href="/data/orbit_decay_tracks">Orbit Decay Tracks</a>
+                <a href="/data/spatial_analysis">Spatial Analysis</a>
+            {% endif %}
+            <div class="text-center mt-auto">
+                {% if current_user.is_authenticated %}
+                    <hr>
+                    <small class="text-secondary d-block mb-2">
+                        <i class="fas fa-user mr-1"></i> {{ current_user.name }}
+                    </small>
+                    <hr>
+                    <a href="/logout" class="btn btn-outline-danger btn-sm btn-block"
+                       onclick="event.stopPropagation()">
+                        <i class="fas fa-sign-out-alt mr-1"></i> Sign out
+                    </a>
+                {% else %}
+                    <a href="/login" class="btn btn-outline-info btn-sm btn-block"
+                       onclick="event.stopPropagation()">
+                        <i class="fab fa-google mr-1"></i> Sign in with Google
+                    </a>
+                {% endif %}
+            </div>
         </div>
-        <div class="content">
+        <div class="col-md-9 content">
             <div class="controls-section">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb" style="margin-bottom: 20px;">
@@ -75,15 +55,16 @@
                     </ol>
                 </nav>
                 <h2>Select your options</h2>
-                <form id="plotForm" method="POST" action="/data/spatial_analysis" style="display: flex; gap: 20px; align-items: flex-end;">
+                <form id="plotForm" method="POST" action="/data/spatial_analysis"
+                      style="display: flex; gap: 20px; align-items: flex-end;">
                     <div class="form-group" style="margin-bottom: 0; flex: 1; max-width: 250px;">
                         <label for="satellite">Choose a satellite:</label>
                         <select id="satellite" name="satellite" class="form-control">
                             {% for code, pretty_name in satellites %}
-                            <option value="{{ code }}"
-                            {% if code == selected_satellite %} selected {% endif %}>
-                            {{ pretty_name }}
-                            </option>
+                                <option value="{{ code }}"
+                                        {% if code == selected_satellite %} selected {% endif %}>
+                                    {{ pretty_name }}
+                                </option>
                             {% endfor %}
                         </select>
                     </div>
@@ -91,27 +72,33 @@
                         <label for="exclude_may_oct">Exclude May-October 2024:</label>
                         <select id="exclude_may_oct" name="exclude_may_oct" class="form-control">
                             {% for option in exclude_options %}
-                            <option value="{{ option }}"
-                                {% if option == selected_exclude %} selected {% endif %}>
-                                {{ option }}
-                            </option>
+                                <option value="{{ option }}"
+                                        {% if option == selected_exclude %} selected {% endif %}>
+                                    {{ option }}
+                                </option>
                             {% endfor %}
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="margin-bottom: 0;">Update Plot</button>
+                    <button type="submit" class="btn btn-outline-info" style="margin-bottom: 0;">Update</button>
                 </form>
             </div>
             <div id="plotContainer">
                 {{ plot_html | safe }}
-                <p style="text-align: center;">Note: this figure was pre-generated and thus is static (uses raw decay rates).</p>
             </div>
+            <br>
+            <p style="text-align: center;">Note: this figure was pre-generated and thus is static (uses raw decay
+                rates).</p>
         </div>
     </div>
+    <div class="row" style="width: 100%;">
+        <footer class="footer">
+            <p class="text-secondary">@Copyright 2026 Vanessa Mercea, Astronomical Institute of the University of Bern.
+                <br> Built with Flask. </p>
+        </footer>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/jquery.slim.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 </body>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="{{ url_for('static', filename='theme.js') }}"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 </html>

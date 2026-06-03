@@ -1,30 +1,54 @@
+import os
+
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 from datetime import datetime
 from skyfield.api import load, wgs84, utc
 
-default_markers = ['circle', 'square', 'diamond', 'x', 'triangle-up', 'triangle-down', 'pentagon', 'hexagon', 'hexagon2', 'circle', 'square', 'diamond', 'x', 'triangle-up']
+default_markers = ['circle', 'square', 'diamond', 'x', 'triangle-up', 'triangle-down', 'pentagon',
+                   'hexagon', 'hexagon2', 'circle', 'square', 'diamond', 'x', 'triangle-up']
+
 
 def compute_subsolar_point_distance(df_sat):
+    """
+    Method used for spatial analysis (static_plots_generation.ipynb)
+    Compute the Haversine distance between the satellite and the subsolar point.
+    Args:
+        df_sat: dataframe with columns 'lat_ell [deg]', 'lon_ell [deg]', 'subsolar_lat', 'subsolar_lon'
+    Returns:
+        dataframe with column 'distance_to_subsolar_point' containing the distance
+    """
     df_sat = df_sat.copy()
     lat1 = np.deg2rad(df_sat['lat_ell [deg]'])
     lon1 = np.deg2rad(df_sat['lon_ell [deg]'])
     lat2 = np.deg2rad(df_sat['subsolar_lat'])
     lon2 = np.deg2rad(df_sat['subsolar_lon'])
 
+    # Haversine distance
     dlon = np.arctan2(np.sin(lon1 - lon2), np.cos(lon1 - lon2))
-    # using the Haversine formula
     a = np.sin((lat1-lat2)/2)**2 + np.cos(lat1)*np.cos(lat2)*np.sin(dlon/2)**2
     df_sat['distance_to_subsolar_point'] = np.rad2deg(2*np.arcsin(np.sqrt(a)))
 
     return df_sat[['distance_to_subsolar_point']]
 
 def compute_subsolar_point(df_sat):
+    """
+    Method used for spatial analysis (static_plots_generation.ipynb)
+
+    Compute the subsolar point (latitude and longitude) for each timestamp in the satellite DataFrame.
+    Args:
+        df_sat: dataframe with columns 'lat_ell [deg]', 'lon_ell [deg]' and a datetime index
+    Returns:
+        dataframe with columns 'subsolar_lat' and 'subsolar_lon' containing the latitude and
+        longitude of the subsolar point for each timestamp
+    """
     df_sat = df_sat.copy()
+
     planets = load('de421.bsp')
     earth, sun = planets['earth'], planets['sun']
     ts = load.timescale()
+    os.remove('de421.bsp')
 
     df_res = df_sat.resample('5min').mean()
 
@@ -43,11 +67,23 @@ def compute_subsolar_point(df_sat):
     df_res['subsolar_lat'] = subpoints.latitude.degrees
     df_sat['subsolar_lon'] = df_res['subsolar_lon'].reindex(df_sat.index, method='nearest')
     df_sat['subsolar_lat'] = df_res['subsolar_lat'].reindex(df_sat.index, method='nearest')
-    # df_sat['distance_to_subsolar_point'] = np.sqrt((df_sat['lon_ell [deg]'] - df_sat['subsolar_lon'])**2 + (df_sat['lat_ell [deg]'] - df_sat['subsolar_lat'])**2)
 
     return df_sat[['subsolar_lon', 'subsolar_lat']]
 
 def get_tracks_for_time(dfs, target_time, duration, resolution, satellite_dict, columns):
+    """
+    Method used for orbit track analysis (static_plots_generation.ipynb)
+    Get the satellite tracks (longitude, latitude, decay values, and additional data) for a specific target time and duration, categorized by altitude.
+    Args:
+        dfs: dict of satellite name to dataframe with satellite data
+        target_time: str or datetime, the target time to get tracks for
+        duration: timedelta, the duration to get tracks for after the target time
+        resolution: str, the resampling resolution (e.g., '1min')
+        satellite_dict: dict mapping satellite names to their metadata, including altitude and display name
+        columns: list of str, additional columns to include in the output
+    Returns:
+        dict: A dictionary with keys 'low-altitude' and 'high-altitude', each containing a dict of satellite display names to their track data (longitude, latitude, decay values, decay
+    """
     all_tracks = {'low-altitude': {}, 'high-altitude': {}}
 
     start = pd.to_datetime(target_time)
@@ -70,8 +106,6 @@ def get_tracks_for_time(dfs, target_time, duration, resolution, satellite_dict, 
         else:
             all_tracks['high-altitude'][satellite_dict[sat]['name']] = (lons, lats, decay_vals, decay_time, additional_data)
 
-        # print(f"Processed satellite: {satellite_dict[sat]['name']} with altitude {satellite_dict[sat]['altitude']} km")
-
     all_vals_low = np.concatenate([t[2] for t in list(all_tracks['low-altitude'].values())])
     all_vals_high = np.concatenate([t[2] for t in list(all_tracks['high-altitude'].values())])
     to_plot = {
@@ -81,6 +115,18 @@ def get_tracks_for_time(dfs, target_time, duration, resolution, satellite_dict, 
     return to_plot
 
 def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satellite_dict = {}, columns = ['F10.7', 'Hp30', 'SymH']):
+    """
+    Plot the satellite orbit tracks on a world map for a specific target time and duration, with markers colored by orbital decay rate and additional data in hover text.
+    Args:
+        dfs: dict of satellite name to dataframe with satellite data
+        target_time (str or datetime): the target time to plot tracks for
+        duration (timedelta, optional): the duration to plot tracks for after the target time. Defaults to None (48 hours).
+        resolution (str, optional): the resampling resolution (e.g., '1min'). Defaults to '1min'.
+        satellite_dict (dict, optional): dict mapping satellite names to their metadata, including altitude and display name. Defaults to {}.
+        columns (list of str, optional): additional columns to include in the hover text. Defaults to ['F10.7', 'Hp30', 'SymH'].
+    Returns:
+        None: Saves the plot as an HTML file in 'data/orbital_decay_tracks'.
+    """
     print(f"Generating orbit tracks plot for time: {target_time} with duration: {duration} and resolution: {resolution}")
     to_plot = get_tracks_for_time(dfs, target_time, duration, resolution, satellite_dict, columns)
     if not duration:
@@ -89,6 +135,7 @@ def plot_orbit_tracks(dfs, target_time, duration=None, resolution='1min', satell
     planets = load('de421.bsp')
     earth, sun = planets['earth'], planets['sun']
     ts = load.timescale()
+    os.remove('de421.bsp')
 
     for altitude_range, (sat_tracks, vmin, vmax) in to_plot.items():
         fig = go.Figure()

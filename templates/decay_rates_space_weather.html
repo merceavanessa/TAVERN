@@ -1,121 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Satellite Data Viewer</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Decay Rates & Space Weather</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body class="light-theme">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="sidebar">
-                <header class="text-center py-1" onclick="window.location.href='/'" style="cursor: pointer;">
-                    <h1 class="display-5 font-weight-bold text-light">
-                        <span class="text-info">T</span>
-                        <span class="text-info">A</span>
-                        <span class="text-info">V</span>
-                        <span class="text-info">E</span>
-                        <span class="text-info">R</span>
-                        <span class="text-info">N </span>
-                    </h1>
-                    <hr class="bg-info">
-                    <br><br>
-                </header>
+<div class="container-fluid">
+    <div class="row">
+        <div class="sidebar">
+            <header class="text-center py-3" onclick="window.location.href='/'" style="cursor: pointer;">
+                <h1 class="display-5 font-weight-bold">
+                    <span class="text-info">T A V E R N</span>
+                </h1>
+                <hr class="bg-info">
+            </header>
+            {% if current_user.is_authenticated %}
                 <a href="/data/statistics">Decay Rate Statistics</a>
                 <a href="/data/decay_rates_space_weather">Decay Rates & Space Weather</a>
                 <a href="/data/response_times">Atmospheric Response Times</a>
                 <a href="/data/space_weather_events">Space Weather Events</a>
                 <a href="/data/orbit_decay_tracks">Orbit Decay Tracks</a>
                 <a href="/data/spatial_analysis">Spatial Analysis</a>
+            {% endif %}
+            <div class="text-center mt-auto">
+                {% if current_user.is_authenticated %}
+                    <hr>
+                    <small class="text-secondary d-block mb-2">
+                        <i class="fas fa-user mr-1"></i> {{ current_user.name }}
+                    </small>
+                    <hr>
+                    <a href="/logout" class="btn btn-outline-danger btn-sm btn-block"
+                       onclick="event.stopPropagation()">
+                        <i class="fas fa-sign-out-alt mr-1"></i> Sign out
+                    </a>
+                {% else %}
+                    <a href="/login" class="btn btn-outline-info btn-sm btn-block"
+                       onclick="event.stopPropagation()">
+                        <i class="fab fa-google mr-1"></i> Sign in with Google
+                    </a>
+                {% endif %}
             </div>
+        </div>
 
-            <div class="col-md-9 content">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                        <li class="breadcrumb-item"><a href="/data/decay_rates_space_weather">Decay Rates & Space Weather</a></li>
-                    </ol>
-                </nav>
-                <h2>Select your options for plotting orbital decay.</h2>
-                <form id="plotForm" method="POST" action="/data/decay_rates_space_weather">
-                    <div class="form-group">
-                        <label for="satellite">Choose a satellite:</label>
-                        <select id="satellite" name="satellite" class="form-control">
-                            {% for satellite in satellites %}
+        <div class="col-md-9 content">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="breadcrumb-item"><a href="/data/decay_rates_space_weather">Decay Rates & Space
+                        Weather</a></li>
+                </ol>
+            </nav>
+            <h2>Select your options for plotting orbital decay.</h2>
+            <form id="plotForm" method="POST" action="/data/decay_rates_space_weather">
+                <div class="form-group">
+                    <label for="satellite">Choose a satellite:</label>
+                    <select id="satellite" name="satellite" class="form-control">
+                        {% for satellite in satellites %}
                             <option value="{{ satellite }}"
                                     {% if satellite == selection.satellite %} selected {% endif %}>
                                 {{ PRETTY_NAMES[satellite]['name'] }}
                             </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="date_start">Choose a start date:</label>
-                        <input type="date" id="date_start" name="date_start" class="form-control" value="{{ selection.date_start }}"
-                                min="2023-01-01" max="2025-01-01">
-                    </div>
-                    <div class="form-group">
-                        <label for="date_end">Choose an end date:</label>
-                        <input type="date" id="date_end" name="date_end" class="form-control" value="{{ selection.date_end }}"
-                                min="2023-01-01" max="2025-01-01">
-                    </div>
-                    <div class="form-group">
-                        <label for="additional_feature">Choose an additional feature to plot against decay:</label>
-                        <select id="additional_feature" name="additional_feature" class="form-control">
-                            {% for additional_feature in additional_features %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="date_start">Choose a start date:</label>
+                    <input type="date" id="date_start" name="date_start" class="form-control"
+                           value="{{ selection.date_start }}"
+                           min="2023-01-01" max="2025-01-01">
+                </div>
+                <div class="form-group">
+                    <label for="date_end">Choose an end date:</label>
+                    <input type="date" id="date_end" name="date_end" class="form-control"
+                           value="{{ selection.date_end }}"
+                           min="2023-01-01" max="2025-01-01">
+                </div>
+                <div class="form-group">
+                    <label for="additional_feature">Choose an additional feature to plot against decay:</label>
+                    <select id="additional_feature" name="additional_feature" class="form-control">
+                        {% for additional_feature in additional_features %}
                             <option value="{{ additional_feature }}"
-                                {% if additional_feature == selection.additional_feature %} selected {% endif %}>
+                                    {% if additional_feature == selection.additional_feature %} selected {% endif %}>
                                 {{ PRETTY_COLUMN_DICT[additional_feature] }}
                             </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update Plot</button>
-                </form>
-
-                <div id="plotContainer" class="mt-4">
-                    {{ plot_html | safe }}
+                        {% endfor %}
+                    </select>
                 </div>
+                <button type="submit" class="btn btn-outline-info">Update</button>
+            </form>
+
+            <div id="plotContainer" class="mt-4">
+                {{ plot_html | safe }}
             </div>
         </div>
-        <div class="row" style="width: 100%;">
-            <footer class="footer">
-                <p class="text-secondary">@Copyright 2026 Vanessa Mercea, Astronomical Institute of the University of Bern. <br> Built with Flask. </p>
-            </footer>
-        </div>
     </div>
-    
-</body>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    if (window.MathJax) {
-      MathJax.typesetPromise();
-    }
-  });
-</script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="{{ url_for('static', filename='theme.js') }}"></script>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <div class="row" style="width: 100%;">
+        <footer class="footer">
+            <p class="text-secondary">@Copyright 2026 Vanessa Mercea, Astronomical Institute of the University of Bern.
+                <br> Built with Flask. </p>
+        </footer>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/jquery.slim.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    flatpickr("#date_start", {
-        dateFormat: "Y-m-d"
-    });
+    document.addEventListener("DOMContentLoaded", function () {
+        flatpickr("#date_start", {
+            dateFormat: "Y-m-d"
+        });
 
-    flatpickr("#date_end", {
-        dateFormat: "Y-m-d"
+        flatpickr("#date_end", {
+            dateFormat: "Y-m-d"
+        });
     });
-});
 </script>
+</body>
 </html>

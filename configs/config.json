@@ -1,14 +1,14 @@
 {
-    "port": 5001,
-    "host": "127.0.0.1",
-    "debug": false,
-    "analysis_folder": "SpaceWeather",
+    "analysis_folder": "SpaceWeatherImpact",
     "file_label": "2023-01-01_2024-12-31",
     "paths": {
+        "base": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/",
         "static_plots": "./data",
-        "alignments": "./data/alignments/",
-        "data": "../SpaceWeather/data/2023-01-01_2024-12-31/processed/",
-        "flags": "../SpaceWeather/data/2023-01-01_2024-12-31/flags_david/"
+        "alignments": "../SpaceWeatherImpact/notebooks/2023-01-01_2024-12-31/plots/alignments/",
+        "data": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/processed/",
+        "flags": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/flags_david/",
+        "orbit_plots": "./data/orbital_decay_tracks/",
+        "spatial_decay_plots": "../SpaceWeatherImpact/notebooks/2023-01-01_2024-12-31/plots/spatial/"
     },
     "flag_files": {
         "ICME": {
