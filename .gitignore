@@ -4,3 +4,4 @@ cache-directory/*
 /configs/config_local.json
 /static/css/
 /static/js/
+.env
