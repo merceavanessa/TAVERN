@@ -10,7 +10,6 @@ class Config:
         self.general_settings = self._load_config('./configs/config.json')
         self.display_settings = self._load_config('./configs/display_config.json')
         self.flag_files = self.general_settings['flag_files']
-        self.analysis_folder = self.general_settings['analysis_folder']
         self.plots_path = self.general_settings['paths']['static_plots']
         self.alignments_path = self.general_settings['paths']['alignments']
         self.data_path = self.general_settings['paths']['data']
