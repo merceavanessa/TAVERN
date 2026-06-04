@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decay Rate Statistics</title>
+    <title>Atmospheric Response Times</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -51,11 +51,11 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                    <li class="breadcrumb-item"><a href="/data/statistics">Statistics</a></li>
+                    <li class="breadcrumb-item"><a href="/data/response_times">Atmospheric Response Times</a></li>
                 </ol>
             </nav>
             <h2>Select your options</h2>
-            <form id="plotForm" method="POST" action="/data/statistics">
+            <form id="plotForm" method="POST" action="/data/response_times">
                 <div class="form-group">
                     <label for="satellite">Choose a satellite:</label>
                     <select id="satellite" name="satellite" class="form-control">
@@ -78,14 +78,51 @@
                         {% endfor %}
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="bzthr">Choose a Bz threshold (nT):</label>
+                    <select id="bzthr" name="bzthr" class="form-control">
+                        {% for option in bzthr_options %}
+                            <option value="{{ option }}"
+                                    {% if option == selected_bzthr %} selected {% endif %}>
+                                {{ option }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="corthr">Choose an alignment correlation threshold:</label>
+                    <select id="corthr" name="corthr" class="form-control">
+                        {% for option in corthr_options %}
+                            <option value="{{ option }}"
+                                    {% if option == selected_corthr %} selected {% endif %}>
+                                {{ option }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="extra24htime">Choose an extra 24h time option:</label>
+                    <select id="extra24htime" name="extra24htime" class="form-control">
+                        {% for option in extra24htime_options %}
+                            <option value="{{ option }}"
+                                    {% if option == selected_extra24htime %} selected {% endif %}>
+                                {{ option }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <br>
                 <button type="submit" class="btn btn-outline-info">Update</button>
             </form>
 
             <div id="plotContainer" class="mt-4">
                 {{ plot_html | safe }}
             </div>
-            <p style="text-align: center;">Note: this figure was pre-generated and thus is static (uses raw decay
-                rates).</p>
+
+            <p style="text-align: center;">Note that for individual satellites, only plots for an alignment correlation
+                threshold of 0.7 were computed (After latest changes). Note also that only storms with |B| ≥ 2σ above
+                the mean during ±24 h around the event were considered for the statistics. </p>
+            <p style="text-align: center;">This figure was pre-generated and thus is static (uses raw decay rates).</p>
         </div>
     </div>
     <div class="row" style="width: 100%;">
@@ -95,8 +132,10 @@
         </footer>
     </div>
 </div>
+
 <script src="{{ url_for('static', filename='js/jquery.slim.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 </body>
+
 </html>

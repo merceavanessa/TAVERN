@@ -1,30 +1,21 @@
 {
-    "SWMA_RDAWFI": {
-        "name": "Swarm A",
-        "altitude": 460
+    "file_label": "2023-01-01_2024-12-31",
+    "paths": {
+        "base": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/",
+        "static_plots": "./data/statistics/",
+        "alignments": "../SpaceWeatherImpact/notebooks/2023-01-01_2024-12-31/plots/alignments/",
+        "data": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/processed/",
+        "flags": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/flags_david/",
+        "orbit_plots": "./data/orbital_decay_tracks/",
+        "spatial_decay_plots": "../SpaceWeatherImpact/notebooks/2023-01-01_2024-12-31/plots/spatial/"
     },
-    "SWMB_RDBWFI": {
-        "name": "Swarm B",
-        "altitude": 530
-    },
-    "SWMC_RDCWFI": {
-        "name": "Swarm C",
-        "altitude": 460
-    },
-    "S3A_RDAEFI": {
-        "name": "Sentinel 3A",
-        "altitude": 814
-    },
-    "S3B_RDAEFI": {
-        "name": "Sentinel 3B",
-        "altitude": 814
-    },
-    "GFOC_RDCDFI": {
-        "name": "GRACE-FO C",
-        "altitude": 500
-    }, 
-    "GFOD_RDDDFI": {
-        "name": "GRACE-FO D",
-        "altitude": 500
+    "flag_files": {
+        "ICME": {
+            "Richardson & Cane": "RC_icmecat_GFOC.csv",
+            "Helio4Cast": "helio4cast_icmecat_GFOC.csv"
+        },
+        "IP Shocks": {
+            "IP Shocks Database": "shocks_GFOC.csv"
+        }
     }
 }

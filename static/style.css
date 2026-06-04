@@ -1,11 +1,45 @@
+/* Theme variables - Default light theme */
+:root {
+    --bg-primary: #181818;
+    --bg-secondary: #232323;
+    --text-primary: #f0f0f0;
+    --text-secondary: #b0b0b0;
+    --sidebar-bg: #211e1e;
+    --border-color: #211e1e;
+    --hover-bg: #3132403a;
+    --checkbox-color: #17a2b8;
+    --radio-color: #6c757d;
+}
+
+input[type="radio"] {
+    accent-color: var(--radio-color);
+}
+
+/* Light theme */
+body.light-theme {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666666;
+    --sidebar-bg: #f0f0f0;
+    --border-color: #cccccc;
+    --hover-bg: #e8e8e8;
+}
+
+.a {
+    color: #17a2b8;
+}
 
 body {
     display: flex;
-    flex-direction: column; /* Stack children vertically */
-    min-height: 100vh;     /* Ensure the body takes the full height of the viewport */
-    margin: 0;             /* Remove default margin */
-    font-family: Arial, sans-serif; /* Optional: Add your font */
-} 
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
 
 .content {
     flex-grow: 1;          /* Allow content to take up available space */
@@ -13,9 +47,13 @@ body {
 }
 
 .footer {
-    color: white;              /* Footer text color */
-    padding: 15px 0;          /* Padding for the footer */
-    width: 100%;              /* Full width */
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    width: 100%;
+    text-align: center;
+    padding: 15px 0;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 select {
@@ -23,28 +61,40 @@ select {
     appearance: none !important;
 }
 
+select.form-control {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
 .sidebar {
     min-height: 100vh;
-    /* background-color: #406e8d; */
     padding: 40px;
     position: sticky;
     font-size: large;
-    top: 0;
+    background-color: var(--sidebar-bg) !important;
+    transition: background-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar h2 {
-    color: #f8f9fa;
+    color: var(--text-primary);
 }
+
 .sidebar a {
     display: block;
     padding: 10px;
-    color: #f8f9fa;
+    color: var(--text-primary);
     text-decoration: none;
     border-radius: 4px;
+    transition: background-color 0.2s ease;
 }
+
 .sidebar a:hover {
-    background-color: #3132403a;
+    background-color: var(--hover-bg);
 }
+
 
 .card {
     margin-bottom: 20px;
@@ -56,15 +106,104 @@ select {
 }
 
 .breadcrumb {
-    background-color: #f8f9fa; /* Light background for visibility */
+    background-color: var(--bg-secondary);
     border-radius: 0.25rem; /* Rounded corners */
 }
 
 .breadcrumb-item a {
     text-decoration: none; /* No underline on links */
-    color: #007bff; /* Primary link color */
+    color: #17a2b8; /* Primary link color */
 }
 
 .breadcrumb-item.active {
     color: #6c757d; /* Secondary color for the current page */
 }
+
+.card {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.card-body {
+    background-color: transparent;
+}
+
+.card-title {
+    color: var(--text-primary);
+}
+
+.card-text {
+    color: var(--text-secondary);
+}
+
+input[type="date"].form-control {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+/* General checkbox styling */
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #17a2b8; /* Blue check color */
+    cursor: pointer;
+    border-radius: 4px; /* Rounded corners */
+    border: 2px solid #17a2b8; /* Outline border */
+    transition: all 0.2s ease-in-out; /* Smooth transition */
+}
+
+/* Hover effect */
+input[type="checkbox"]:hover {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+    border-color: #17a2b8;
+}
+
+/* Checked state (enhances the accent color) */
+input[type="checkbox"]:checked {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+/* Optional: space between checkbox and label */
+.form-check-label {
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Light theme specific overrides */
+body.light-theme .breadcrumb-item a {
+    color: #17a2b8;
+}
+
+body.light-theme .breadcrumb-item.active {
+    color: #138496;
+}
+
+a {
+    color: #17a2b8; /* teal */
+}
+
+a:hover {
+    color: #138496; /* darker teal */
+}
+
+body.light-theme input[type="text"].form-control,
+body.light-theme input[type="email"].form-control,
+body.light-theme textarea.form-control {
+    background-color: #ffffff;
+    color: #1a1a1a;
+    border: 1px solid #cccccc;
+}
+
+body.dark-theme input[type="text"].form-control,
+body.dark-theme input[type="email"].form-control,
+body.dark-theme textarea.form-control {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+

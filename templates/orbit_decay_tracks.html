@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decay Rate Statistics</title>
+    <title>Orbit Decay Tracks</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -51,48 +51,62 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                    <li class="breadcrumb-item"><a href="/data/statistics">Statistics</a></li>
+                    <li class="breadcrumb-item"><a href="/data/orbit_decay_tracks">Orbit Decay Tracks</a>
                 </ol>
             </nav>
             <h2>Select your options</h2>
-            <form id="plotForm" method="POST" action="/data/statistics">
+            <form id="plotForm" method="POST" action="/data/orbit_decay_tracks">
                 <div class="form-group">
-                    <label for="satellite">Choose a satellite:</label>
-                    <select id="satellite" name="satellite" class="form-control">
-                        {% for satellite in satellites %}
-                            <option value="{{ satellite }}"
-                                    {% if satellite == selected_satellite %} selected {% endif %}>
-                                {{ PRETTY_NAMES[satellite]['name'] }}
+                    <label for="date">Choose a date:</label>
+                    <select id="date" name="date" class="form-control">
+                        {% for date in dates %}
+                            <option value="{{ date }}"
+                                    {% if date == selected_date %} selected {% endif %}>
+                                {{ date }}
                             </option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="plot_type">Choose a plot type:</label>
-                    <select id="plot_type" name="plot_type" class="form-control">
-                        {% for plot_type in plot_types %}
-                            <option value="{{ plot_type }}"
-                                    {% if plot_type == selected_plot_type %} selected {% endif %}>
-                                {{ plot_type }}
+                    <label for="altitude">Choose altitude range:</label>
+                    <select id="altitude" name="altitude" class="form-control">
+                        {% for option in altitude_options %}
+                            <option value="{{ option }}"
+                                    {% if option == selected_altitude %} selected {% endif %}>
+                                {% if option == 'below' %}
+                                    Below 600 km
+                                {% else %}
+                                    Above 600 km
+                                {% endif %}
                             </option>
                         {% endfor %}
                     </select>
                 </div>
+                <br>
                 <button type="submit" class="btn btn-outline-info">Update</button>
             </form>
 
             <div id="plotContainer" class="mt-4">
+                <style>
+                    #plotContainer > div, #plotContainer .plotly-graph-div {
+                        width: 100% !important;
+                        height: 80vh !important;
+                    }
+                </style>
                 {{ plot_html | safe }}
             </div>
-            <p style="text-align: center;">Note: this figure was pre-generated and thus is static (uses raw decay
-                rates).</p>
+            <p style="text-align: center;">This visualization shows orbital decay tracks for satellites separated by
+                altitude range (below and above 600 km). Currently available for the top three strongest events during
+                2023-2024. Interacting via the slider is recommended compared to the automated animation
+                (play/pause). </p>
+            <p style="text-align: center;">This figure was pre-generated and thus is static (uses raw decay rates).</p>
         </div>
-    </div>
-    <div class="row" style="width: 100%;">
-        <footer class="footer">
-            <p class="text-secondary">@Copyright 2026 Vanessa Mercea, Astronomical Institute of the University of Bern.
-                <br> Built with Flask. </p>
-        </footer>
+        <div class="row" style="width: 100%;">
+            <footer class="footer">
+                <p class="text-secondary">@Copyright 2026 Vanessa Mercea, Astronomical Institute of the University of
+                    Bern. <br> Built with Flask. </p>
+            </footer>
+        </div>
     </div>
 </div>
 <script src="{{ url_for('static', filename='js/jquery.slim.min.js') }}"></script>
@@ -100,3 +114,4 @@
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 </body>
 </html>
+

@@ -1,8 +1,9 @@
 data/*
 cache-directory/*
 .DS_Store
-/configs/config.json
+/configs/config_local.json
 /static/css/
 /static/js/
-leodecayvenv
 .env
+leodecayvenv
+/configs/config.json
