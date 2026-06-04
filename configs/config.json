@@ -1,9 +1,8 @@
 {
-    "analysis_folder": "SpaceWeatherImpact",
     "file_label": "2023-01-01_2024-12-31",
     "paths": {
         "base": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/",
-        "static_plots": "./data",
+        "static_plots": "./data/statistics/",
         "alignments": "../SpaceWeatherImpact/notebooks/2023-01-01_2024-12-31/plots/alignments/",
         "data": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/processed/",
         "flags": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/flags_david/",
