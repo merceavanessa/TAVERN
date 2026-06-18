@@ -2,11 +2,7 @@ from dotenv import load_dotenv
 import os
 import base64
 
-# Load environment variables from .env
-if os.path.exists('.env'):
-    load_dotenv() # local development
-else:
-    load_dotenv('/var/www/leodecay/.env')# production
+load_dotenv()
 
 import base64
 from datetime import timedelta
