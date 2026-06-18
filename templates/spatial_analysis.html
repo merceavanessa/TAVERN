@@ -22,7 +22,19 @@
             {% if current_user.is_authenticated %}
                 <a href="/data/statistics">Decay Rate Statistics</a>
                 <a href="/data/decay_rates_space_weather">Decay Rates & Space Weather</a>
-                <a href="/data/response_times">Atmospheric Response Times</a>
+
+                <a href="#responseTimesMenu" data-toggle="collapse"
+                   style="display:flex; justify-content:space-between; align-items:center;">
+                    Atmospheric Response Times &nbsp;<i class="fas fa-chevron-down" style="font-size:0.75em;"></i>
+                </a>
+                <div class="collapse show" id="responseTimesMenu">
+                    <a href="/data/response_times" style="padding-left: 1.5rem; font-size: 0.9em;">
+                        ↳ Statistics
+                    </a>
+                    <a href="/data/alignments" style="padding-left: 1.5rem; font-size: 0.9em;">
+                        ↳ Event-specific alignments
+                    </a>
+                </div>
                 <a href="/data/space_weather_events">Space Weather Events</a>
                 <a href="/data/orbit_decay_tracks">Orbit Decay Tracks</a>
                 <a href="/data/spatial_analysis">Spatial Analysis</a>

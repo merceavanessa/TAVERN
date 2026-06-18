@@ -22,7 +22,18 @@
             {% if current_user.is_authenticated %}
                 <a href="/data/statistics">Decay Rate Statistics</a>
                 <a href="/data/decay_rates_space_weather">Decay Rates & Space Weather</a>
-                <a href="/data/response_times">Atmospheric Response Times</a>
+                <a href="#responseTimesMenu" data-toggle="collapse"
+                   style="display:flex; justify-content:space-between; align-items:center;">
+                    Atmospheric Response Times &nbsp;<i class="fas fa-chevron-down" style="font-size:0.75em;"></i>
+                </a>
+                <div class="collapse show" id="responseTimesMenu">
+                    <a href="/data/response_times" style="padding-left: 1.5rem; font-size: 0.9em;">
+                        ↳ Statistics
+                    </a>
+                    <a href="/data/alignments" style="padding-left: 1.5rem; font-size: 0.9em;">
+                        ↳ Event-specific alignments
+                    </a>
+                </div>
                 <a href="/data/space_weather_events">Space Weather Events</a>
                 <a href="/data/orbit_decay_tracks">Orbit Decay Tracks</a>
                 <a href="/data/spatial_analysis">Spatial Analysis</a>
@@ -52,6 +63,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
                     <li class="breadcrumb-item"><a href="/data/response_times">Atmospheric Response Times</a></li>
+                    <li class="breadcrumb-item active">Statistics</li>
                 </ol>
             </nav>
             <h2>Select your options</h2>
@@ -79,12 +91,12 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="bzthr">Choose a Bz threshold (nT):</label>
-                    <select id="bzthr" name="bzthr" class="form-control">
-                        {% for option in bzthr_options %}
+                    <label for="cor_column">Choose a column to correlate:</label>
+                    <select id="cor_column" name="cor_column" class="form-control">
+                        {% for option in cor_column_options %}
                             <option value="{{ option }}"
-                                    {% if option == selected_bzthr %} selected {% endif %}>
-                                {{ option }}
+                                    {% if option == selected_cor_column %} selected {% endif %}>
+                                {{ PRETTY_COLUMN_DICT[option] }}
                             </option>
                         {% endfor %}
                     </select>
@@ -116,13 +128,25 @@
             </form>
 
             <div id="plotContainer" class="mt-4">
-                {{ plot_html | safe }}
+                <style>
+                    #plotContainer > div, #plotContainer .plotly-graph-div {
+                        width: 100% !important;
+                        height: 80vh !important;
+                    }
+                </style>
+                    {% if has_data %}
+                        {{ plot_html | safe }}
+                    {% else %}
+                        <p id="noPlotMsg" style="color: #6c757d;">
+                            <i class="fas fa-info-circle"></i> No data found for the selected options.
+                        </p>
+                    {% endif %}
             </div>
-
-            <p style="text-align: center;">Note that for individual satellites, only plots for an alignment correlation
-                threshold of 0.7 were computed (After latest changes). Note also that only storms with |B| ≥ 2σ above
-                the mean during ±24 h around the event were considered for the statistics. </p>
-            <p style="text-align: center;">This figure was pre-generated and thus is static (uses raw decay rates).</p>
+            <br>
+            <p style="text-align: center;">Note that only storms with |B| ≥ 2σ above
+                the full dataset mean (2-year), during ±24 h around the event, were considered for the statistics. <br>
+                For individual satellites, n is the number of events of a geomagnetic storm class that contribute. For 'all_satellites', it's the same number times the number of satellites yielding significant correlations.
+                <br> This figure was pre-generated and thus is static (uses smoothed decay rates).  </p>
         </div>
     </div>
     <div class="row" style="width: 100%;">

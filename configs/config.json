@@ -3,7 +3,8 @@
     "paths": {
         "base": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/",
         "static_plots": "./data/statistics/",
-        "alignments": "../SpaceWeatherImpact/notebooks/2023-01-01_2024-12-31/plots/alignments/",
+        "alignments": "../stormquest/results/alignment/html/",
+        "alignments_cor" : "../stormquest/results/alignment/cors/",
         "data": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/processed/",
         "flags": "../SpaceWeatherImpact/data/2023-01-01_2024-12-31/flags_david/",
         "orbit_plots": "./data/orbital_decay_tracks/",

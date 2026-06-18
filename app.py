@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+import base64
 
 # Load environment variables from .env
 if os.path.exists('.env'):
@@ -9,9 +10,10 @@ else:
 
 import base64
 from datetime import timedelta
-from flask import Flask, render_template, request, jsonify, make_response, session, url_for, redirect
+from flask import Flask, render_template, request, jsonify, make_response, session, url_for, redirect, abort, Response
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from flask_talisman import Talisman
+from flask import send_file
 
 from tavern.visualization import *
 from tavern.config import config
@@ -285,44 +287,112 @@ def decay_rates_space_weather():
 @app.route('/data/response_times', methods=['GET', 'POST'])
 @login_required
 def response_times():
-    satellites, plot_types, bzthr_options, corthr_options, extra24htime_options = get_available_response_time_plots()
+    satellites, plot_types, corthr_options, extra24htime_options, cor_column_options = get_available_response_time_plots()
 
     if request.method == 'GET':
         selected_satellite = 'all_satellites'
         selected_plot_type = plot_types[0]
-        selected_bzthr = bzthr_options[0]
         selected_corthr = corthr_options[1]
         selected_extra24htime = extra24htime_options[0]
+        selected_cor_column = cor_column_options[0]
     else:
         selected_satellite = request.form.get('satellite')
         selected_plot_type = request.form.get('plot_type')
-        selected_bzthr = request.form.get('bzthr')
         selected_corthr = request.form.get('corthr')
         selected_extra24htime = request.form.get('extra24htime')
+        selected_cor_column = request.form.get('cor_column')
 
     if selected_satellite and selected_plot_type:
         extra_text = config.event_filtering_map.get(selected_extra24htime, '')
 
-    plot_filename = f'alignment_corr_combined_{selected_satellite}_Bzthr-{selected_bzthr}_cor-thr-{selected_corthr}{extra_text}.html'
+    plot_filename = f'alignment_corr_{selected_cor_column}_combined_{selected_satellite}_Bzthr-0_cor-thr-{selected_corthr}_{extra_text}.html'
     plot_html = get_plot_html(plot_filename, plot_dir=config.alignments_path)
 
-    # hide line of text from tspan in plot_html starting with "Shifts counted"
-    plot_html = plot_html.replace('<text x="40" y="80" font-size="14" fill="white">Shifts counted',
-                                  '<text x="40" y="80" font-size="14" fill="white" style="display:none;">Shifts counted')
     return render_template('response_times.html',
+                           has_data = plot_html != None,
                            plot_html=plot_html,
                            satellites=satellites,
                            plot_types=plot_types,
                            PRETTY_NAMES=config.satellite_info,
+                           PRETTY_COLUMN_DICT=config.feature_names,
                            selected_satellite=selected_satellite,
                            selected_plot_type=selected_plot_type,
-                           bzthr_options=bzthr_options,
+                           cor_column_options=cor_column_options,
                            corthr_options=corthr_options,
                            extra24htime_options=extra24htime_options,
-                           selected_bzthr=selected_bzthr,
+                           selected_cor_column=selected_cor_column,
                            selected_corthr=selected_corthr,
                            selected_extra24htime=selected_extra24htime)
 
+# ——————— Correlation-Based Alignments ———————
+@app.route('/data/alignments', methods=['GET', 'POST'])
+@login_required
+def alignments():
+    satellites, cor_column_options, event_class_options, event_id_options, extra24htime_options, cor_thr_options, event_id_map = get_available_alignment_plots()
+
+    if request.method == 'GET':
+        selected_satellite = satellites[0]
+        selected_cor_column = cor_column_options[0]
+        selected_event_class = event_class_options[0]
+        selected_event = event_id_options[0]
+        selected_cor_thr = cor_thr_options[0]
+        selected_extra24htime = extra24htime_options[0]
+    else:
+        selected_satellite = request.form.get('satellite')
+        selected_cor_column = request.form.get('cor_column')
+        selected_event_class = request.form.get('event_class')
+        selected_event = request.form.get('event')
+        selected_cor_thr = request.form.get('cor_thr')
+        selected_extra24htime = request.form.get('extra24htime')
+
+    print(selected_cor_thr)
+
+    extra_text = config.event_filtering_map.get(selected_extra24htime, '')
+
+    plot_url = url_for('alignments_png',
+                       cor_column=selected_cor_column,
+                       event_class=selected_event_class,
+                       event=selected_event,
+                       satellite=selected_satellite,
+                       cor_thr=selected_cor_thr,
+                       extra_text=extra_text)
+
+    return render_template('alignments.html',
+                           event_id_map=event_id_map,
+                           plot_url=plot_url,
+                           satellites=satellites,
+                           PRETTY_NAMES=config.satellite_info,
+                           PRETTY_COLUMN_DICT=config.feature_names,
+                           selected_satellite=selected_satellite,
+                           cor_column_options=cor_column_options,
+                           cor_thr_options=cor_thr_options,
+                           selected_cor_thr=selected_cor_thr,
+                           event_class_options=event_class_options,
+                           event_id_options=event_id_options,
+                           extra24htime_options=extra24htime_options,
+                           selected_cor_column=selected_cor_column,
+                           selected_event_class=selected_event_class,
+                           selected_event=selected_event,
+                           selected_extra24htime=selected_extra24htime)
+
+# ——————— Serve alignment correlation PNGs ———————
+@app.route('/data/alignments/png')
+@login_required
+def alignments_png():
+    cor_column = request.args.get('cor_column')
+    event_class = request.args.get('event_class')
+    event = request.args.get('event')
+    satellite = request.args.get('satellite')
+    cor_thr = request.args.get('cor_thr')
+    extra_text = request.args.get('extra_text', '')
+
+    plot_filename = f'correlation_{cor_column}_event_{event_class}_{event}_sat_{satellite}_bzthr_0_cor_{cor_thr}{extra_text}.png'
+    plot_path = os.path.join(config.alignments_cor_path, plot_filename)
+
+    if not os.path.exists(plot_path):
+        abort(404)
+
+    return send_file(plot_path, mimetype='image/png')
 
 # ——————— Space Weather Events ———————
 @app.route('/data/space_weather_events', methods=['GET', 'POST'])

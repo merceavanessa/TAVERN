@@ -14,6 +14,7 @@
     "Hp30" : "Planetary Hp30-index",
     "|avg B|": "Avg. SW IMF Magnitude (nT)",
     "Bz GSE": "Z-component of SW IMF in GSE (nT)",
+    "Bz GSE-sign-flipped": "Z-component of SW IMF in GSE (nT) (sign flipped)",
     "By GSE": "Y-component of SW IMF in GSE (nT)",
     "Bx GSE": "X-component of SW IMF in GSE (nT)",
     "Flow Speed (km/s)": "SW Flow Speed (km/s)",

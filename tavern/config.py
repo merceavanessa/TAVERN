@@ -12,6 +12,7 @@ class Config:
         self.flag_files = self.general_settings['flag_files']
         self.plots_path = self.general_settings['paths']['static_plots']
         self.alignments_path = self.general_settings['paths']['alignments']
+        self.alignments_cor_path = self.general_settings['paths']['alignments_cor']
         self.data_path = self.general_settings['paths']['data']
         self.orbit_plots_path = self.general_settings['paths'].get('orbit_plots', None)
         self.spatial_decay_plots_path = self.general_settings['paths'].get('spatial_decay_plots', None)
@@ -27,7 +28,7 @@ class Config:
         
         self.event_filtering_map = {
             'included': '_with_24h_extratime',
-            'not-included': '',
+            'not-included': '_with_0h_extratime',
             'before and after': '_with_24h_extratime_bothways'
         }
 

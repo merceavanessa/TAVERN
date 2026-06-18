@@ -38,35 +38,74 @@ def get_available_response_time_plots():
     """
     Get available response time plots, satellites, and filtering options.
     Returns:
-        tuple: (satellites, plot_types, bzthr_options, corthr_options, extra24htime) - 
+        tuple: (satellites, plot_types, corthr_options, extra24htime, cor_column_options) -
                Lists of available options
     """
     satellites = set()
-    plot_types = set()
-    bzthr_options = ['0', '9999']
+    plot_types = ['atmospheric response times']
     corthr_options = ['0.7', '0.8', '0.9']
     extra24htime = ['included', 'not-included', 'before and after']
+    cor_column_options = set()
 
     for filename in os.listdir(config.alignments_path):
         if filename.endswith('.html'):
+            satellite = None
             parts = filename.split('_')
-            if len(parts) >= 3:
-                plot_type = 'atmospheric response times'
+            if len(parts) >= 6:
                 if 'RD' in filename: # is satellite
-                    satellite = parts[3]+'_'+parts[4]
+                    satellite = parts[4]+'_'+parts[5]
                 else:
-                    satellite = 'all_satellites'
+                    if 'all' in filename:
+                        satellite = 'all_satellites'
 
-                satellite = satellite.removesuffix('.html')
+                cor_column_options.add(parts[2])
+                if satellite:
+                    satellites.add(satellite)
 
-                satellites.add(satellite)
-                plot_types.add(plot_type)
+    return sorted(list(satellites)), sorted(list(plot_types)), corthr_options, extra24htime, sorted(list(cor_column_options))
 
-    return sorted(list(satellites)), sorted(list(plot_types)), bzthr_options, corthr_options, extra24htime
+
+def get_available_alignment_plots():
+    """
+    Get available alignment plots satellites, correlation thresholds, and extra time options.
+    Returns:
+         a tuple of lists: (satellites, cor_column_options, event class options (G1-G5), event id options (all available for selected class option), extra24htime, cor_thr_options)
+    """
+    satellites = set()
+    cor_column_options = set()
+    event_class_options = set()
+    event_id_options = set()
+    cor_thr_options = set()
+    extra24htime = ['included', 'not-included', 'before and after']
+
+    # event id first digit is always one of [1,2,3,4,5], next digits are the event number in the series in cronological order
+    event_id_map = {}
+
+    for filename in os.listdir(config.alignments_cor_path):
+        if filename.endswith('.png'):
+            parts = filename.split('_')
+
+            cor_column_options.add(parts[1])
+            event_class = parts[3]
+            event_id = parts[4]
+            event_class_options.add(event_class)
+            event_id_options.add(event_id)
+
+            if event_class not in event_id_map:
+                event_id_map[event_class] = set()
+            event_id_map[event_class].add(int(event_id))
+
+            if len(parts) >= 12:
+                satellites.add(parts[6] + '_' + parts[7])
+                cor_thr_options.add(parts[11])
+
+    event_id_map = {k: sorted(v) for k, v in event_id_map.items()}
+
+    return sorted(list(satellites)), sorted(list(cor_column_options)), sorted(list(event_class_options)), sorted(list(event_id_options)), extra24htime, sorted(list(cor_thr_options)), event_id_map
 
 def get_available_orbit_tracks():
     """
-    Get available orbit decay track plots, dates, and altitude ranges.
+    Get available orbit decay track plots dates and altitude ranges.
     Returns:
         tuple: (dates, altitude_options, default_date, default_altitude) -
                Lists of available dates and altitude options, plus defaults
@@ -116,7 +155,7 @@ def get_plot_html(filename, plot_dir=None):
         with open(file_path, 'r') as f:
             return f.read()
     except FileNotFoundError:
-        return "<p>Plot not found.</p>"
+        return None
 
 def create_time_series_visualization(satellite, date_start, date_end, selected_feature):
     """
