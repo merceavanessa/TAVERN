@@ -7,6 +7,7 @@ load_dotenv()
 import base64
 from datetime import timedelta
 from flask import Flask, render_template, request, jsonify, make_response, session, url_for, redirect, abort, Response
+from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from flask_talisman import Talisman
 from flask import send_file
@@ -17,6 +18,9 @@ from tavern.auth import *
 
 # —————————————————————————— APP SETUP ——————————————————————————
 app = Flask(__name__, static_folder='static', template_folder='templates')
+# telling Flask that we are in a reverse proxy environment (behind nginx) so that
+# it can correctly handle redirects (e.g. for google auth authorize)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 # Configuration
 app.config.update(
