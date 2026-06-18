@@ -412,6 +412,8 @@ def space_weather_events():
         selected_additional_features = request.form.getlist('selected_columns[]')
 
     plot_html = get_data_plot_html(selected_additional_features, selected_overlay, selected_satellite)
+    all_features = config.additional_features.copy()
+    all_features.remove('activity_level')
 
     return render_template('space_weather_events.html',
                            plot_html=plot_html,
@@ -422,7 +424,7 @@ def space_weather_events():
                            selected_overlay=selected_overlay,
                            selected_columns=selected_additional_features,
                            PRETTY_COLUMN_DICT=config.feature_names,
-                           columns=config.additional_features)
+                           columns=all_features)
 
 
 # ——————— Orbit Decay Tracks ———————
