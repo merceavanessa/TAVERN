@@ -246,7 +246,7 @@ def get_spatial_decay_pdf_path(satellite, exclude_may_oct):
         pass
     return None
 
-def plot_time_series_with_storms(df, satellite, cols_to_plot, overlay='Geomagnetic Storms', rs='3H'):
+def plot_time_series_with_storms(df, satellite, cols_to_plot, overlay='Geomagnetic Storms', rs='3h'):
     """
     Plot different time series with storms.
     Args:
