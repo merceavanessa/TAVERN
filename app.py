@@ -24,6 +24,7 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 # Configuration
 app.config.update(
+    PREFERRED_URL_SCHEME='https' if os.environ.get('LEODECAY_FLASK_ENV') == 'production' else 'http',
     SECRET_KEY=os.environ.get('LEODECAY_SECRET_KEY') or (_ for _ in ()).throw(
         ValueError("LEODECAY_SECRET_KEY not set")),  # signs sessions/cookies
 
