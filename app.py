@@ -91,7 +91,11 @@ Talisman(
     app,
     strict_transport_security=False,
     content_security_policy=csp,
-    force_https=os.environ.get('FORCE_HTTPS', 'False').lower() == 'true'
+    force_https=os.environ.get('FORCE_HTTPS', 'False').lower() == 'true',
+    x_content_type_options=False,
+    frame_options=False,
+    referrer_policy=False,
+    x_xss_protection=False,
 )
 
 # —————————————————————————— RENDER UTILS ——————————————————————————
