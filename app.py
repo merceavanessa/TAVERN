@@ -59,14 +59,16 @@ csp = {
     'default-src': ["'self'"],
     'style-src': [
         "'self'",
-        "'unsafe-inline'",
+        "'unsafe-inline'", # required by Plotly.js for inline scripts;
+                           # acceptable risk: all routes require OAuth + whitelist
         "https://cdn.jsdelivr.net",
         "https://cdnjs.cloudflare.com",
         "https://stackpath.bootstrapcdn.com"
     ],
     'script-src': [
         "'self'",
-        "'unsafe-inline'",  # added to allow inline scripts from plotly
+        "'unsafe-inline'", # required by Plotly.js for inline scripts;
+                           # acceptable risk: all routes require OAuth + whitelist
         "https://code.jquery.com",
         "https://cdn.jsdelivr.net",
         "https://stackpath.bootstrapcdn.com"
@@ -81,7 +83,8 @@ csp = {
         "'self'",
         "https://cdn.plot.ly",  # added for plotly animations
     ],
-    'frame-src': ["'self'", "blob:", "data:"]
+    'frame-src': ["'self'", "blob:", "data:"],
+    'frame-ancestors': ["'self'", "https://*.unibe.ch"] # iframe embedding only allowed from unibe websites
 }
 
 # Security headers (CSP, HSTS, etc.)
