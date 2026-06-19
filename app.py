@@ -85,7 +85,7 @@ csp = {
 }
 
 # Security headers (CSP, HSTS, etc.)
-Talisman(app, strict_transport_security=True, content_security_policy=csp,
+Talisman(app, strict_transport_security=False, content_security_policy=csp,
          force_https=os.environ.get('FORCE_HTTPS', 'False').lower() == 'true')
 
 
