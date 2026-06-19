@@ -85,9 +85,23 @@ csp = {
 }
 
 # Security headers (CSP, HSTS, etc.)
-Talisman(app, strict_transport_security=False, content_security_policy=csp,
-         force_https=os.environ.get('FORCE_HTTPS', 'False').lower() == 'true')
-
+if app.config.get('FLASK_ENV') == 'production':
+    # we let nginx handle these remotely via the config file
+    Talisman(
+        app,
+        strict_transport_security=False,
+        content_security_policy=False,
+        x_content_type_options=False,
+        x_frame_options=False,
+        referrer_policy=False,
+        force_https=os.environ.get('FORCE_HTTPS', 'False').lower() == 'true'
+    )
+else:
+    Talisman(app,
+             strict_transport_security=True,
+             content_security_policy=csp,
+             force_https=app.config.get('FORCE_HTTPS', 'False').lower() == 'true'
+             )
 
 # —————————————————————————— RENDER UTILS ——————————————————————————
 def render_selected_template(satellites, selected_date_end, selected_date_start, selected_feature, selected_satellite):
