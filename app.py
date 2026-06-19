@@ -91,9 +91,6 @@ Talisman(
     app,
     strict_transport_security=False,
     content_security_policy=csp,
-    x_content_type_options=False,
-    x_frame_options=False,
-    referrer_policy=False,
     force_https=os.environ.get('FORCE_HTTPS', 'False').lower() == 'true'
 )
 
